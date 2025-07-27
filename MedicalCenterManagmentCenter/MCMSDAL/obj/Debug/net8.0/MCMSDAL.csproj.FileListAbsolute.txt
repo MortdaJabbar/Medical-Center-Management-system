@@ -1,0 +1,48 @@
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.deps.json
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfo.cs
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\refint\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\ref\MCMSDAL.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.deps.json
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfo.cs
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\refint\MCMSDAL.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\ref\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.deps.json
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfo.cs
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\refint\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\ref\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.deps.json
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfo.cs
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\refint\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\ref\MCMSDAL.dll

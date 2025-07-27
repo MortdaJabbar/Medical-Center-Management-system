@@ -1,0 +1,60 @@
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.deps.json
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfo.cs
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\refint\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\ref\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBuss.41A40C53.Up2Date
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.deps.json
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfo.cs
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBuss.41A40C53.Up2Date
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\refint\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\New folder (7)\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\ref\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.deps.json
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfo.cs
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBuss.41A40C53.Up2Date
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\refint\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\ref\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.deps.json
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\bin\Debug\net8.0\MCMSDAL.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.AssemblyInfo.cs
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBuss.41A40C53.Up2Date
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\refint\MCMSBussinessLogic.dll
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\MCMSBussinessLogic.pdb
+C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSBussinessLogic\obj\Debug\net8.0\ref\MCMSBussinessLogic.dll

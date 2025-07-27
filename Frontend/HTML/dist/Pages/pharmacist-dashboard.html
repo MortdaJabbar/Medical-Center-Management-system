@@ -1,0 +1,249 @@
+
+<!doctype html>
+<html lang="en" dir="ltr">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Medical Center Management</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="allowed-roles" content="Pharmacist">
+        <!-- favicon -->
+        <link rel="shortcut icon" href="../assets/images/favicon.ico">
+        
+        <!-- Css -->
+        <link href="../assets/libs/simplebar/simplebar.min.css" rel="stylesheet">
+        <!-- Bootstrap Css -->
+        <link href="../assets/css/bootstrap.min.css" class="theme-opt" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="../assets/libs/remixicon/fonts/remixicon.css" rel="stylesheet" type="text/css" />
+        <link href="../assets/libs/@iconscout/unicons/css/line.css" type="text/css" rel="stylesheet" />
+        <!-- Style Css-->
+        <link href="../assets/css/style.min.css" class="theme-opt" rel="stylesheet" type="text/css" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+         <script src="../assets/js/check-auth.js"></script>
+
+
+<style>
+    .dashboard-wrapper {
+       
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 10%; /* نزول من الأعلى */
+    }
+
+    .dashboard-cards .card-box {
+        transition: all 0.2s;
+    }
+
+    .dashboard-cards .card-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+
+    footer.bg-footer-color {
+        padding: 8px 0;
+        font-size: 13px;
+        color: #888;
+    }
+</style>
+
+
+
+    </head>
+
+    <body>
+        <!-- Loader -->
+        <!-- <div id="preloader">
+            <div id="status">
+                <div class="spinner">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Loader -->
+
+        <div class="page-wrapper doctris-theme toggled">
+            <!-- sidebar-wrapper -->
+            <nav id="sidebar" class="sidebar-wrapper">
+                <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px);">
+                    <div class="sidebar-brand">
+                        <a href="pharmacist-dashboard.html">
+                            <img src="../assets/images/logo-dark.png" height="22" class="logo-light-mode" alt="">
+                            <img src="../assets/images/logo-light.png" height="22" class="logo-dark-mode" alt="">
+                            <span class="sidebar-colored">
+                                <img src="../assets/images/logo-light.png" height="22" alt="">
+                            </span>
+                        </a>
+                    </div>
+        
+                   <ul class="sidebar-menu">
+    <!-- Dashboard -->
+    <li>
+        <a href="pharmacist-dashboard.html">
+            <i class="uil uil-estate me-2 d-inline-block"></i>Dashboard
+        </a>
+    </li>
+
+    <!-- Prescriptions -->
+    <li>
+        <a href="Prescriptions.html">
+            <i class="uil uil-prescription-bottle me-2 d-inline-block"></i>Prescriptions
+        </a>
+    </li>
+
+    <!-- Inventory -->
+    <li>
+        <a href="inventory.html">
+        <i class="uil uil-archive me-2 d-inline-block"></i>
+Inventory
+    </a>
+    </li>
+
+    <!-- Medications -->
+    <li>
+        <a href="Medications.html">
+            <i class="uil uil-capsule me-2 d-inline-block"></i>Medications
+        </a>
+    </li>
+</ul>
+
+                    <!-- sidebar-menu  -->
+                </div>
+               
+            </nav>
+            <!-- sidebar-wrapper  -->
+            <!-- sidebar-wrapper  -->
+
+            <!-- Start Page Content -->
+            <main class="page-content bg-light">
+                <div class="top-header">
+                    <div class="header-bar d-flex justify-content-between border-bottom">
+                        <div class="d-flex align-items-center">
+                            <a href="#" class="logo-icon">
+                                <img src="../assets/images/logo-icon.png" height="30" class="small" alt="">
+                                <span class="big">
+                                    <img src="../assets/images/logo-dark.png" height="22" class="logo-light-mode" alt="">
+                                    <img src="../assets/images/logo-light.png" height="22" class="logo-dark-mode" alt="">
+                                </span>
+                            </a>
+                            <a id="close-sidebar" class="btn btn-icon btn-pills btn-soft-primary ms-2" href="#">
+                                <i class="uil uil-bars"></i>
+                            </a>
+                              
+                        </div>
+
+                        <ul class="list-unstyled mb-0">
+                          <li class="list-inline-item mb-0 ms-1">
+                                 <div class="dropdown dropdown-primary">
+                                    <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img id="profileImage2"src="C:/Images/00.jpg" class="avatar avatar-ex-small rounded-circle" alt=""></button>
+                                    <div class="dropdown-menu dd-menu dropdown-menu-end shadow border-0 mt-3 py-3" style="min-width: 200px;">
+                                        <a class="dropdown-item d-flex align-items-center text-dark" href="pharmacist-dashboard.html">
+                                            <img id="profileImage1"src="C:/Images/00.jpg" class="avatar avatar-md-sm rounded-circle border shadow" alt="">
+                                            <div class="flex-1 ms-2">
+                                                <span id="CurrentName" class="d-block mb-1">Mortda Jabbar</span>
+                                                <small id ="CurrentRole" class="text-muted">Admin</small>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item text-dark" href="pharmacist-dashboard.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-dashboard align-middle h6"></i></span> Dashboard</a>
+                                        <a class="dropdown-item text-dark" href="pharmacist-profile.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-setting align-middle h6"></i></span> Profile Settings</a>
+                                        <div class="dropdown-divider border-top"></div>
+                                       <a id="logoutBtn" class="dropdown-item text-dark" href="#"><span class="mb-0 d-inline-block me-1"><i class="uil uil-sign-out-alt align-middle h6"></i></span>Logout</a>
+                                    </div>
+                                </div>
+                            </li>         
+                        </ul>
+                    </div>
+                </div>
+
+
+ 
+
+<div class="container dashboard-wrapper ">
+        <div class="mb-4">
+    <h3 class="text-dark fw-bold">Pharmacist Dashboard</h3>
+    <p class="text-muted">Manage Medications, Inventory and Prescriptions.</p>
+</div>
+<div class="row dashboard-cards w-100">
+
+    <!-- Total Medications -->
+<div class="col-md-6 col-6 mb-4">
+    <div class="bg-white shadow rounded p-4 text-center">
+        <i class="ri-capsule-line text-primary" style="font-size: 32px;"></i>
+        <h4 class="mt-2 mb-1" id="totalMedications">5</h4>
+        <p class="text-muted mb-0">Total Medications</p>
+    </div>
+</div>
+
+<!-- Total Prescriptions -->
+<div class="col-md-6 col-6 mb-4">
+    <div class="bg-white shadow rounded p-4 text-center">
+        <i class="ri-file-list-3-line text-success" style="font-size: 32px;"></i>
+        <h4 class="mt-2 mb-1" id="totalPrescriptions">20</h4>
+        <p class="text-muted mb-0">Prescriptions</p>
+    </div>
+</div>
+
+<!-- Inventory Stock -->
+<div class="col-md-6 col-6 mb-4">
+    <div class="bg-white shadow rounded p-4 text-center">
+        <i class="ri-archive-drawer-line text-warning" style="font-size: 32px;"></i>
+        <h4 class="mt-2 mb-1" id="inventoryStock">7</h4>
+        <p class="text-muted mb-0">Inventory Items</p>
+    </div>
+</div>
+
+<!-- Low Stock Alerts -->
+<div class="col-md-6 col-6 mb-4">
+    <div class="bg-white shadow rounded p-4 text-center">
+        <i class="ri-alert-line text-danger" style="font-size: 32px;"></i>
+        <h4 class="mt-2 mb-1" id="lowStockCount">2</h4>
+        <p class="text-muted mb-0">Low Stock Alerts</p>
+    </div>
+</div>
+
+</div>
+  </div>
+                <!-- Footer Start -->
+                <footer class="bg-footer-color shadow py-2 small text-muted">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="text-sm-start text-center">
+                                    <p class="mb-0 text-muted"><script>document.write(new Date().getFullYear())</script> Medical Center Managment System </p>
+                                </div>
+                            </div><!--end col-->
+                        </div><!--end row-->
+                    </div><!--end container-->
+                </footer><!--end footer-->
+                <!-- End -->
+            </main>
+            <!--End page-content" -->
+        </div>
+        <!-- page-wrapper -->
+
+     
+
+         
+        <!-- javascript -->
+        <script src="../assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+        <script src="../assets/js/admin-apexchart.init.js"></script>
+        <script src="../assets/libs/feather-icons/feather.min.js"></script>
+        <!-- Main Js -->
+        <!-- JAVASCRIPT -->
+      
+        <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="../assets/js/plugins.init.js"></script>
+        <script src="../assets/js/app.js"></script>
+        <script src="../assets/js/loadPharmcistDashboard.js"></script>
+         <script src="../assets/js/logout.js"></script>
+        <script src="../assets/js/ProfileImage.js"></script>
+        <script src="../assets/js/profilesettings.js"></script>
+        
+    </body>
+
+</html>

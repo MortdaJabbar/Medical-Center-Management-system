@@ -1,0 +1,20 @@
+tools Needed :
+1-sql server
+2-visual studio community
+3-browser
+
+how to run the project:
+
+1- Restore The Database "MCMS.bak" in sql server
+2- run medical center MedicalCenterManagmentCenter.sln 
+3- Frontend-->dist-->pages-->login 
+
+
+use google and chatgpt -:)
+
+Best regards
+
+Mortda Jabbar Hassan 
+
+2025/05/25
+
