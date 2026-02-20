@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsbussinesslogic\\refreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|solutionrelative:mcmsbussinesslogic\\refreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsdal\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|solutionrelative:mcmsdal\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -35,6 +39,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "RefreshTokenService.cs",
+              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\RefreshTokenService.cs",
+              "RelativeDocumentMoniker": "MCMSBussinessLogic\\RefreshTokenService.cs",
+              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\RefreshTokenService.cs",
+              "RelativeToolTip": "MCMSBussinessLogic\\RefreshTokenService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T14:50:09.551Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "AuthDtos.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\AuthDtos.cs",
               "RelativeDocumentMoniker": "MCMSDAL\\AuthDtos.cs",
@@ -47,7 +64,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "RefreshTokenRecord.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\RefreshTokenRecord.cs",
               "RelativeDocumentMoniker": "MCMSDAL\\RefreshTokenRecord.cs",
@@ -60,7 +77,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\appsettings.json",
               "RelativeDocumentMoniker": "MCMSAPI\\appsettings.json",
@@ -73,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "AuthController.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\AuthController.cs",
@@ -86,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Program.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Program.cs",
