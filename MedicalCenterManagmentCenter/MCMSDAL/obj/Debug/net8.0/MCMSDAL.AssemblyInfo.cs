@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MCMSDAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d0024d08eff33721ba390d4933edb7963d8c0906")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+808455b327313e84d1c182f365b49099469fe147")]
 [assembly: System.Reflection.AssemblyProductAttribute("MCMSDAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MCMSDAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
