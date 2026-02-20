@@ -348,6 +348,26 @@ namespace MCMSAPI.Controllers
             });
         }
 
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            // Extract UserId from JWT claim
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out Guid userId))
+                return BadRequest("Invalid token claims.");
+
+            var csvPath = _config["RefreshTokens:CsvPath"];
+
+            await RefreshTokenService.RevokeAllForUserAsync(
+                userId,
+                csvPath!
+            );
+
+            return Ok("Logged out successfully.");
+        }
+
 
     }
 }
