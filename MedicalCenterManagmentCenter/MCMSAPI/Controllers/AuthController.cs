@@ -271,5 +271,83 @@ namespace MCMSAPI.Controllers
 
             return Ok("Password has been reset successfully.");
         }
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.RefreshToken))
+                return BadRequest("Refresh token is required.");
+
+            var csvPath = _config["RefreshTokens:CsvPath"];
+            var hashKey = _config["RefreshTokens:HashKey"];
+            var expiresDays = int.Parse(_config["RefreshTokens:ExpiresInDays"] ?? "7");
+
+            // STEP 1 — Validate token
+            var validation = await RefreshTokenService.ValidateForRotationAsync(
+                dto.RefreshToken,
+                csvPath!,
+                hashKey!
+            );
+
+            if (!validation.IsValid)
+            {
+                // If reuse detected → revoke all user sessions
+                if (validation.IsReuseDetected)
+                {
+                    await RefreshTokenService.RevokeAllForUserAsync(
+                        validation.UserId,
+                        csvPath!
+                    );
+                }
+
+                return Unauthorized(validation.Error ?? "Invalid refresh token.");
+            }
+
+            // STEP 2 — Load user
+            var user = await UserAccount.FindByIDAsync(validation.UserId);
+            if (user == null)
+                return Unauthorized("User not found.");
+
+            // STEP 3 — Issue new refresh token
+            var newIssue = await RefreshTokenService.IssueAsync(
+                user.UserId,
+                csvPath!,
+                hashKey!,
+                expiresDays,
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Request.Headers.UserAgent.ToString()
+            );
+
+            // STEP 4 — Revoke old token (rotation)
+            await RefreshTokenService.RevokeAndReplaceAsync(
+                dto.RefreshToken,
+                newIssue.RefreshTokenHash,
+                csvPath!,
+                hashKey!
+            );
+
+            // STEP 5 — Issue new access token
+            var jwt = GetJwtOptions();
+
+            var newAccessToken = JwtHelper.GenerateJwtToken(
+                user.UserId,
+                user.PersonId,
+                user.RoleId,
+                jwt.Key,
+                jwt.Issuer,
+                jwt.Audience,
+                jwt.ExpiresInMinutes
+            );
+
+            return Ok(new
+            {
+                accessToken = newAccessToken,
+                refreshToken = newIssue.RefreshToken,
+                accessTokenExpiresAtUtc = DateTime.UtcNow.AddMinutes(jwt.ExpiresInMinutes),
+                refreshTokenExpiresAtUtc = newIssue.ExpiresAtUtc
+            });
+        }
+
+
     }
 }
