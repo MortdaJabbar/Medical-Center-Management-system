@@ -111,7 +111,20 @@ namespace MCMSAPI.Controllers
 
             if (!myUser.Is2FAEnabled)
             {
-                var token = JwtHelper.GenerateJwtToken(
+                var csvPath = _config["RefreshTokens:CsvPath"];
+                var hashKey = _config["RefreshTokens:HashKey"];
+                var expiresDays = int.Parse(_config["RefreshTokens:ExpiresInDays"] ?? "7");
+
+                var issue = await RefreshTokenService.IssueAsync(
+                    myUser.UserId,
+                    csvPath!,
+                    hashKey!,
+                    expiresDays,
+                    HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    Request.Headers.UserAgent.ToString()
+                );
+
+                var accessToken = JwtHelper.GenerateJwtToken(
                     myUser.UserId,
                     myUser.PersonId,
                     myUser.RoleId,
@@ -123,7 +136,10 @@ namespace MCMSAPI.Controllers
 
                 return Ok(new
                 {
-                    token,
+                    accessToken,
+                    refreshToken = issue.RefreshToken,
+                    accessTokenExpiresAtUtc = DateTime.UtcNow.AddMinutes(jwt.ExpiresInMinutes),
+                    refreshTokenExpiresAtUtc = issue.ExpiresAtUtc,
                     userId = myUser.UserId,
                     entityId = myUser.PersonId,
                     roleId = myUser.RoleId,
@@ -176,7 +192,20 @@ namespace MCMSAPI.Controllers
 
             var jwt = GetJwtOptions();
 
-            var token = JwtHelper.GenerateJwtToken(
+            var csvPath = _config["RefreshTokens:CsvPath"];
+            var hashKey = _config["RefreshTokens:HashKey"];
+            var expiresDays = int.Parse(_config["RefreshTokens:ExpiresInDays"] ?? "7");
+
+            var issue = await RefreshTokenService.IssueAsync(
+                myUser.UserId,
+                csvPath!,
+                hashKey!,
+                expiresDays,
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Request.Headers.UserAgent.ToString()
+            );
+
+            var accessToken = JwtHelper.GenerateJwtToken(
                 myUser.UserId,
                 myUser.PersonId,
                 myUser.RoleId,
@@ -188,7 +217,10 @@ namespace MCMSAPI.Controllers
 
             return Ok(new
             {
-                token,
+                accessToken,
+                refreshToken = issue.RefreshToken,
+                accessTokenExpiresAtUtc = DateTime.UtcNow.AddMinutes(jwt.ExpiresInMinutes),
+                refreshTokenExpiresAtUtc = issue.ExpiresAtUtc,
                 userId = myUser.UserId,
                 entityId = myUser.PersonId,
                 roleId = myUser.RoleId,
