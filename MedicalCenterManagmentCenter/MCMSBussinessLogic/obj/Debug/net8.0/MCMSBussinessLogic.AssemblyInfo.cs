@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MCMSBussinessLogic")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b2838fbbea41a7780121e7b58c0c4b17d33d2cb2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bdbcbd25e5bbcb1760de9c709e6aadc7f688329f")]
 [assembly: System.Reflection.AssemblyProductAttribute("MCMSBussinessLogic")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MCMSBussinessLogic")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

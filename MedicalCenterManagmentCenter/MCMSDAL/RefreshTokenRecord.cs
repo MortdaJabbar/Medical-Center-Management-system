@@ -1,97 +1,73 @@
 ﻿using System.Globalization;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace MCMSDAL
 {
     public class RefreshTokenRecord
     {
-        public string TokenHash { get; set; } = "";
+        public Guid TokenId { get; set; }
         public Guid UserId { get; set; }
-        public DateTime CreatedAtUtc { get; set; }
+        public string TokenHash { get; set; } = "";
         public DateTime ExpiresAtUtc { get; set; }
         public DateTime? RevokedAtUtc { get; set; }
         public string? ReplacedByTokenHash { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
         public string? CreatedByIp { get; set; }
-        public string? RevokedByIp { get; set; }
         public string? UserAgent { get; set; }
     }
 
-    public static class RefreshTokenFileData
+    public static class RefreshTokenCsvData
     {
         private static readonly SemaphoreSlim _lock = new(1, 1);
 
-        // Change this to your base-dir helper if you already have one
-        private static string FilePath => Path.Combine(AppContext.BaseDirectory, "data", "refresh_tokens.csv");
+        private const string Header =
+            "TokenId,UserId,TokenHash,ExpiresAtUtc,RevokedAtUtc,ReplacedByTokenHash,CreatedAtUtc,CreatedByIp,UserAgent";
 
-        public static string HashToken(string rawToken)
+        public static async Task EnsureFileAsync(string csvPath)
         {
-            using var sha = SHA256.Create();
-            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(rawToken));
-            return Convert.ToHexString(bytes); // 64 hex chars
+            var dir = Path.GetDirectoryName(csvPath);
+            if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            if (!File.Exists(csvPath))
+                await File.WriteAllTextAsync(csvPath, Header + Environment.NewLine, Encoding.UTF8);
         }
 
-        public static async Task EnsureCreatedAsync()
+        public static async Task<List<RefreshTokenRecord>> GetAllAsync(string csvPath)
         {
-            var dir = Path.GetDirectoryName(FilePath)!;
-            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            await EnsureFileAsync(csvPath);
 
-            if (!File.Exists(FilePath))
-            {
-                var header = "TokenHash,UserId,CreatedAtUtc,ExpiresAtUtc,RevokedAtUtc,ReplacedByTokenHash,CreatedByIp,RevokedByIp,UserAgent";
-                await File.WriteAllTextAsync(FilePath, header + Environment.NewLine);
-            }
-        }
-
-        public static async Task AddAsync(RefreshTokenRecord rec)
-        {
             await _lock.WaitAsync();
             try
             {
-                await EnsureCreatedAsync();
+                var lines = await File.ReadAllLinesAsync(csvPath, Encoding.UTF8);
+                var list = new List<RefreshTokenRecord>();
 
-                // optional: prevent duplicates
-                var existing = await FindByHashAsync(rec.TokenHash);
-                if (existing != null) return;
-
-                var line = string.Join(",",
-                    Csv(rec.TokenHash),
-                    Csv(rec.UserId.ToString()),
-                    Csv(rec.CreatedAtUtc.ToString("O")),
-                    Csv(rec.ExpiresAtUtc.ToString("O")),
-                    Csv(rec.RevokedAtUtc?.ToString("O")),
-                    Csv(rec.ReplacedByTokenHash),
-                    Csv(rec.CreatedByIp),
-                    Csv(rec.RevokedByIp),
-                    Csv(rec.UserAgent)
-                );
-
-                await File.AppendAllTextAsync(FilePath, line + Environment.NewLine);
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }
-
-        public static async Task<RefreshTokenRecord?> FindByHashAsync(string tokenHash)
-        {
-            await _lock.WaitAsync();
-            try
-            {
-                await EnsureCreatedAsync();
-
-                var lines = await File.ReadAllLinesAsync(FilePath);
                 // skip header
                 for (int i = 1; i < lines.Length; i++)
                 {
-                    var cols = ParseCsvLine(lines[i]);
+                    var line = lines[i];
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    var cols = SplitCsvLine(line);
                     if (cols.Count < 9) continue;
 
-                    if (string.Equals(cols[0], tokenHash, StringComparison.OrdinalIgnoreCase))
-                        return Map(cols);
+                    list.Add(new RefreshTokenRecord
+                    {
+                        TokenId = Guid.Parse(cols[0]),
+                        UserId = Guid.Parse(cols[1]),
+                        TokenHash = cols[2],
+                        ExpiresAtUtc = DateTime.Parse(cols[3], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
+                        RevokedAtUtc = string.IsNullOrWhiteSpace(cols[4]) ? null :
+                            DateTime.Parse(cols[4], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
+                        ReplacedByTokenHash = string.IsNullOrWhiteSpace(cols[5]) ? null : cols[5],
+                        CreatedAtUtc = DateTime.Parse(cols[6], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
+                        CreatedByIp = string.IsNullOrWhiteSpace(cols[7]) ? null : cols[7],
+                        UserAgent = string.IsNullOrWhiteSpace(cols[8]) ? null : cols[8],
+                    });
                 }
-                return null;
+
+                return list;
             }
             finally
             {
@@ -99,68 +75,96 @@ namespace MCMSDAL
             }
         }
 
-        public static async Task<List<RefreshTokenRecord>> GetByUserIdAsync(Guid userId)
+        public static async Task AddAsync(string csvPath, RefreshTokenRecord rec)
         {
+            await EnsureFileAsync(csvPath);
+
+            var line = string.Join(",",
+                rec.TokenId.ToString(),
+                rec.UserId.ToString(),
+                EscapeCsv(rec.TokenHash),
+                rec.ExpiresAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+                rec.RevokedAtUtc?.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture) ?? "",
+                EscapeCsv(rec.ReplacedByTokenHash ?? ""),
+                rec.CreatedAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+                EscapeCsv(rec.CreatedByIp ?? ""),
+                EscapeCsv(rec.UserAgent ?? "")
+            );
+
             await _lock.WaitAsync();
             try
             {
-                await EnsureCreatedAsync();
+                await File.AppendAllTextAsync(csvPath, line + Environment.NewLine, Encoding.UTF8);
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
 
-                var result = new List<RefreshTokenRecord>();
-                var lines = await File.ReadAllLinesAsync(FilePath);
+        public static async Task<bool> UpdateAsync(string csvPath, Func<RefreshTokenRecord, bool> predicate, Action<RefreshTokenRecord> update)
+        {
+            await EnsureFileAsync(csvPath);
+
+            await _lock.WaitAsync();
+            try
+            {
+                var lines = await File.ReadAllLinesAsync(csvPath, Encoding.UTF8);
+                if (lines.Length <= 1) return false;
+
+                var header = lines[0];
+                var records = new List<RefreshTokenRecord>();
 
                 for (int i = 1; i < lines.Length; i++)
                 {
-                    var cols = ParseCsvLine(lines[i]);
+                    var cols = SplitCsvLine(lines[i]);
                     if (cols.Count < 9) continue;
 
-                    if (Guid.TryParse(cols[1], out var uid) && uid == userId)
-                        result.Add(Map(cols));
+                    records.Add(new RefreshTokenRecord
+                    {
+                        TokenId = Guid.Parse(cols[0]),
+                        UserId = Guid.Parse(cols[1]),
+                        TokenHash = cols[2],
+                        ExpiresAtUtc = DateTime.Parse(cols[3], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
+                        RevokedAtUtc = string.IsNullOrWhiteSpace(cols[4]) ? null :
+                            DateTime.Parse(cols[4], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
+                        ReplacedByTokenHash = string.IsNullOrWhiteSpace(cols[5]) ? null : cols[5],
+                        CreatedAtUtc = DateTime.Parse(cols[6], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
+                        CreatedByIp = string.IsNullOrWhiteSpace(cols[7]) ? null : cols[7],
+                        UserAgent = string.IsNullOrWhiteSpace(cols[8]) ? null : cols[8],
+                    });
                 }
 
-                return result;
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }
-
-        // revoke a token (and optionally set replaced-by hash)
-        public static async Task<bool> RevokeAsync(string tokenHash, DateTime revokedAtUtc, string? revokedByIp, string? replacedByTokenHash = null)
-        {
-            await _lock.WaitAsync();
-            try
-            {
-                await EnsureCreatedAsync();
-
-                var lines = (await File.ReadAllLinesAsync(FilePath)).ToList();
-                bool updated = false;
-
-                for (int i = 1; i < lines.Count; i++)
+                bool changed = false;
+                foreach (var r in records)
                 {
-                    var cols = ParseCsvLine(lines[i]);
-                    if (cols.Count < 9) continue;
-
-                    if (!string.Equals(cols[0], tokenHash, StringComparison.OrdinalIgnoreCase))
-                        continue;
-
-                    // Already revoked -> do nothing
-                    if (!string.IsNullOrWhiteSpace(cols[4])) return false;
-
-                    cols[4] = revokedAtUtc.ToString("O");
-                    cols[5] = replacedByTokenHash ?? cols[5];
-                    cols[7] = revokedByIp ?? cols[7];
-
-                    lines[i] = string.Join(",", cols.Select(Csv));
-                    updated = true;
-                    break;
+                    if (predicate(r))
+                    {
+                        update(r);
+                        changed = true;
+                    }
                 }
 
-                if (updated)
-                    await File.WriteAllLinesAsync(FilePath, lines);
+                if (!changed) return false;
 
-                return updated;
+                var outLines = new List<string> { header };
+                foreach (var r in records)
+                {
+                    outLines.Add(string.Join(",",
+                        r.TokenId.ToString(),
+                        r.UserId.ToString(),
+                        EscapeCsv(r.TokenHash),
+                        r.ExpiresAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+                        r.RevokedAtUtc?.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture) ?? "",
+                        EscapeCsv(r.ReplacedByTokenHash ?? ""),
+                        r.CreatedAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+                        EscapeCsv(r.CreatedByIp ?? ""),
+                        EscapeCsv(r.UserAgent ?? "")
+                    ));
+                }
+
+                await File.WriteAllLinesAsync(csvPath, outLines, Encoding.UTF8);
+                return true;
             }
             finally
             {
@@ -168,79 +172,54 @@ namespace MCMSDAL
             }
         }
 
-        public static bool IsExpired(RefreshTokenRecord rec, DateTime nowUtc)
-            => rec.ExpiresAtUtc <= nowUtc;
-
-        public static bool IsRevoked(RefreshTokenRecord rec)
-            => rec.RevokedAtUtc.HasValue;
-
-        // ---------- helpers ----------
-        private static RefreshTokenRecord Map(List<string> c)
+        // -------- CSV helpers (simple + safe) --------
+        private static string EscapeCsv(string value)
         {
-            return new RefreshTokenRecord
-            {
-                TokenHash = c[0],
-                UserId = Guid.Parse(c[1]),
-                CreatedAtUtc = DateTime.Parse(c[2], null, DateTimeStyles.RoundtripKind),
-                ExpiresAtUtc = DateTime.Parse(c[3], null, DateTimeStyles.RoundtripKind),
-                RevokedAtUtc = string.IsNullOrWhiteSpace(c[4]) ? null : DateTime.Parse(c[4], null, DateTimeStyles.RoundtripKind),
-                ReplacedByTokenHash = string.IsNullOrWhiteSpace(c[5]) ? null : c[5],
-                CreatedByIp = string.IsNullOrWhiteSpace(c[6]) ? null : c[6],
-                RevokedByIp = string.IsNullOrWhiteSpace(c[7]) ? null : c[7],
-                UserAgent = string.IsNullOrWhiteSpace(c[8]) ? null : c[8],
-            };
+            if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
+                return "\"" + value.Replace("\"", "\"\"") + "\"";
+            return value;
         }
 
-        private static string Csv(string? s)
+        private static List<string> SplitCsvLine(string line)
         {
-            s ??= "";
-            if (s.Contains('"')) s = s.Replace("\"", "\"\"");
-            if (s.Contains(',') || s.Contains('\n') || s.Contains('\r') || s.Contains('"'))
-                return $"\"{s}\"";
-            return s;
-        }
-
-        // minimal CSV parser for one line
-        private static List<string> ParseCsvLine(string line)
-        {
-            var res = new List<string>();
+            var result = new List<string>();
             var sb = new StringBuilder();
             bool inQuotes = false;
 
             for (int i = 0; i < line.Length; i++)
             {
-                char ch = line[i];
+                char c = line[i];
 
                 if (inQuotes)
                 {
-                    if (ch == '"' && i + 1 < line.Length && line[i + 1] == '"')
+                    if (c == '"')
                     {
-                        sb.Append('"'); // escaped quote
-                        i++;
+                        if (i + 1 < line.Length && line[i + 1] == '"')
+                        {
+                            sb.Append('"');
+                            i++;
+                        }
+                        else
+                        {
+                            inQuotes = false;
+                        }
                     }
-                    else if (ch == '"')
-                    {
-                        inQuotes = false;
-                    }
-                    else sb.Append(ch);
+                    else sb.Append(c);
                 }
                 else
                 {
-                    if (ch == ',')
+                    if (c == ',')
                     {
-                        res.Add(sb.ToString());
+                        result.Add(sb.ToString());
                         sb.Clear();
                     }
-                    else if (ch == '"')
-                    {
-                        inQuotes = true;
-                    }
-                    else sb.Append(ch);
+                    else if (c == '"') inQuotes = true;
+                    else sb.Append(c);
                 }
             }
 
-            res.Add(sb.ToString());
-            return res;
+            result.Add(sb.ToString());
+            return result;
         }
     }
 }
