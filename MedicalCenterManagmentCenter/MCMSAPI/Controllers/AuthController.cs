@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MCMSAPI.Helper;
 using MCMSAPI.dtos;
 using Microsoft.AspNetCore.Authorization;
+
 namespace MCMSAPI.Controllers
 {
     [ApiController]
@@ -11,11 +12,32 @@ namespace MCMSAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
+
         public AuthController(IConfiguration config)
         {
             _config = config;
         }
-        [Authorize(Roles ="Admin")]
+
+        private (string Key, string Issuer, string Audience, int ExpiresInMinutes) GetJwtOptions()
+        {
+            string key = _config["Jwt:Key"] ?? "";
+            string issuer = _config["Jwt:Issuer"] ?? "";
+            string audience = _config["Jwt:Audience"] ?? "";
+            string expiresStr = _config["Jwt:ExpiresInMinutes"] ?? "";
+
+            if (string.IsNullOrWhiteSpace(key))
+                throw new InvalidOperationException("JWT Key is missing. Set Jwt:Key in configuration/environment variables.");
+            if (string.IsNullOrWhiteSpace(issuer))
+                throw new InvalidOperationException("JWT Issuer is missing. Set Jwt:Issuer in configuration/environment variables.");
+            if (string.IsNullOrWhiteSpace(audience))
+                throw new InvalidOperationException("JWT Audience is missing. Set Jwt:Audience in configuration/environment variables.");
+            if (!int.TryParse(expiresStr, out int expiresInMinutes) || expiresInMinutes <= 0)
+                throw new InvalidOperationException("JWT ExpiresInMinutes is invalid. Set Jwt:ExpiresInMinutes to a positive number.");
+
+            return (key, issuer, audience, expiresInMinutes);
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
         {
@@ -28,20 +50,18 @@ namespace MCMSAPI.Controllers
                 Email = dto.Email,
                 PasswordHash = PasswordHelper.HashPassword(dto.Password),
                 RoleId = dto.RoleId,
-
             };
 
             bool created = await user.RegisterAsync();
             if (!created)
                 return BadRequest("Email already exists.");
 
-
             // إرسال رمز التحقق بالبريد
             Task.Run(() => EmailSender.SendVerificationEmailAsync(user.Email, user.UserId));
 
-            // رجّع رد للمستخدم
             return Ok(new { user.UserId, message = "Account created. Please check your email to verify." });
         }
+
         [Authorize(Roles = "Admin")]
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
@@ -59,16 +79,15 @@ namespace MCMSAPI.Controllers
             if (expiry < DateTime.UtcNow)
                 return BadRequest("Token has expired.");
 
-            // فعل الحساب
             bool activated = await UserAccountData.ActivateUserAsync(userId);
             if (!activated)
                 return StatusCode(500, "Failed to activate account.");
 
-            // علم الرمز كـ مستخدم
             await EmailVerificationData.MarkAsUsedAsync(token);
 
             return Ok("Email verified successfully.");
         }
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
@@ -76,64 +95,66 @@ namespace MCMSAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var MyUser = await UserAccount.FindByEmailAsync(dto.Email);
+            var myUser = await UserAccount.FindByEmailAsync(dto.Email);
 
-            if (MyUser == null)
+            if (myUser == null)
                 return Unauthorized("Invalid credentials.");
 
-            if (!MyUser.IsActive)
+            if (!myUser.IsActive)
                 return Unauthorized("Account is not activated.");
 
-            if (!PasswordHelper.VerifyPassword(dto.Password, MyUser.PasswordHash))
+            if (!PasswordHelper.VerifyPassword(dto.Password, myUser.PasswordHash))
                 return Unauthorized("Email Or Password Is Not Correct Please Contact Your Admin.");
 
-            if (!MyUser.Is2FAEnabled)
-            {
-                var token = JwtHelper.GenerateJwtToken(MyUser.UserId, MyUser.PersonId, MyUser.RoleId,
+            // ✅ Always use config/env (no hardcoding)
+            var jwt = GetJwtOptions();
 
-                   "STORNGKEY&%#@^$$!@#&%*#@ABCSIUHUDTYE^99",
-                   "MCMS",
-                   "MCMSUsers",
-                     120);
+            if (!myUser.Is2FAEnabled)
+            {
+                var token = JwtHelper.GenerateJwtToken(
+                    myUser.UserId,
+                    myUser.PersonId,
+                    myUser.RoleId,
+                    jwt.Key,
+                    jwt.Issuer,
+                    jwt.Audience,
+                    jwt.ExpiresInMinutes
+                );
+
                 return Ok(new
                 {
                     token,
-                    userId = MyUser.UserId,
-                    entityId = MyUser.PersonId,
-                    roleId = MyUser.RoleId,
-                    role = MyUser.RoleText
+                    userId = myUser.UserId,
+                    entityId = myUser.PersonId,
+                    roleId = myUser.RoleId,
+                    role = myUser.RoleText
                 });
-
             }
 
             // لو 2FA مفعل → أرسل الكود للإيميل
-            Task.Run(()=>EmailSender.SendTwoFactorCodeAsync(MyUser.Email, MyUser.UserId));
+            Task.Run(() => EmailSender.SendTwoFactorCodeAsync(myUser.Email, myUser.UserId));
 
             return Ok(new
             {
-                MyUser.UserId,
+                myUser.UserId,
                 message = "2FA code sent. Please verify to complete login."
             });
-
-
-
         }
-        
+
         [HttpPost("ChangePassword/{UserId}")]
         public async Task<IActionResult> ChanagePassword(Guid UserId, [FromBody] ChangePasswordDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var MyUser = await UserAccount.FindByIDAsync(UserId);
+            var myUser = await UserAccount.FindByIDAsync(UserId);
 
-            if (MyUser == null)
+            if (myUser == null)
                 return BadRequest("Invalid credentials.No User With this Id");
 
-            bool Updated = await MyUser.ChangePasswordAsync(dto.OldPassword, dto.NewPassword);
+            bool updated = await myUser.ChangePasswordAsync(dto.OldPassword, dto.NewPassword);
 
-            return Updated ? Ok("Password Updated Succesffuly") : BadRequest("Failed To Update Password");
-
+            return updated ? Ok("Password Updated Succesffuly") : BadRequest("Failed To Update Password");
         }
 
         [HttpPost("confirm-2fa")]
@@ -150,27 +171,31 @@ namespace MCMSAPI.Controllers
 
             await TwoFactorCodeData.MarkAsUsedAsync(userId, code);
 
+            var myUser = await UserAccount.FindByIDAsync(userId);
+            if (myUser == null) return NotFound("User not found.");
 
-            var MyUser = await UserAccount.FindByIDAsync(userId); // تعمل نفس FindByEmailAsync
-            if (MyUser == null) return NotFound("User not found.");
+            var jwt = GetJwtOptions();
 
-            var token = JwtHelper.GenerateJwtToken(MyUser.UserId, MyUser.PersonId, MyUser.RoleId,
+            var token = JwtHelper.GenerateJwtToken(
+                myUser.UserId,
+                myUser.PersonId,
+                myUser.RoleId,
+                jwt.Key,
+                jwt.Issuer,
+                jwt.Audience,
+                jwt.ExpiresInMinutes
+            );
 
-                   _config["Jwt:Key"],
-                   _config["Jwt:Issuer"],
-                   _config["Jwt:Audience"],
-                   int.Parse(_config["Jwt:ExpiresInMinutes"]));
             return Ok(new
             {
                 token,
-                userId = MyUser.UserId,
-                entityId = MyUser.PersonId,
-                roleId = MyUser.RoleId,
-                role = MyUser.RoleText
-
+                userId = myUser.UserId,
+                entityId = myUser.PersonId,
+                roleId = myUser.RoleId,
+                role = myUser.RoleText
             });
         }
-         
+
         [HttpGet("profile/{personId}")]
         public async Task<ActionResult<PersonProfileDto>> GetProfile(Guid personId)
         {
@@ -186,12 +211,11 @@ namespace MCMSAPI.Controllers
         {
             var user = await UserAccount.FindByEmailAsync(email);
             if (user == null)
-                return Ok("If an account exists, a reset link has been sent."); // Don't reveal existence
+                return Ok("If an account exists, a reset link has been sent.");
 
-          Task.Run (()=> EmailSender.SendPasswordResetEmailAsync(email, user.UserId));
+            Task.Run(() => EmailSender.SendPasswordResetEmailAsync(email, user.UserId));
             return Ok("If an account exists, a reset link has been sent.");
         }
-
 
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
@@ -211,13 +235,9 @@ namespace MCMSAPI.Controllers
             if (!updated)
                 return StatusCode(500, "Failed to update password.");
 
-            await PasswordResetData.DeleteTokenAsync(dto.Token); // أمنياً نحذف التوكن
+            await PasswordResetData.DeleteTokenAsync(dto.Token);
 
             return Ok("Password has been reset successfully.");
-
-
-
         }
-
     }
 }

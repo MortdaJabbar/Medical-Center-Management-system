@@ -46,3 +46,16 @@ C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\M
 C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\refint\MCMSDAL.dll
 C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.pdb
 C:\Users\User\Desktop\MedicalCenter\MedicalCenter\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\ref\MCMSDAL.dll
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.deps.json
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.dll
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\bin\Debug\net8.0\MCMSDAL.pdb
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.AssemblyReference.cache
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfoInputs.cache
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.AssemblyInfo.cs
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.csproj.CoreCompileInputs.cache
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.sourcelink.json
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.dll
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\refint\MCMSDAL.dll
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\MCMSDAL.pdb
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSDAL\obj\Debug\net8.0\ref\MCMSDAL.dll
