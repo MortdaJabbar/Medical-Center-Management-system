@@ -32,7 +32,7 @@ namespace MCMSAPI.Controllers
             var pharmacist = _mapper.Map<Pharmacist>(addPharmacistDto);
             bool isAdded = await pharmacist.AddNewPharmacistAsync();
 
-            return isAdded ? Ok(pharmacist.DTO.PharmacistId) : BadRequest("Pharmacist already exists or cannot be added.");
+            return isAdded ? Ok(pharmacist.PharmacistId) : BadRequest("Pharmacist already exists or cannot be added.");
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("update/{id}")]
@@ -72,7 +72,8 @@ namespace MCMSAPI.Controllers
         public async Task<IActionResult> DeletePharmacist(Guid pharmacistId)
         {
             Pharmacist Pharmist = await Pharmacist.FindPharmacistByIdAsync(pharmacistId);
-            if (pharmacistId == null) { return NotFound("Pharmacist not found"); }
+            if (Pharmist == null)
+                return NotFound();
             bool deleted = await Pharmacist.DeletePharmacistByIdAsync(pharmacistId, Pharmist.PersonId);
             return deleted ? Ok("Deleted successfully.") : StatusCode(500, "Internal Error in our servers  ");
         }

@@ -1,20 +1,7 @@
-tools Needed :
-1-sql server
-2-visual studio community
-3-browser
-
-how to run the project:
-
-1- Restore The Database "MCMS.bak" in sql server
-2- run medical center MedicalCenterManagmentCenter.sln 
-3- Frontend-->dist-->pages-->login 
-
-
-use google and chatgpt -:)
-
-Best regards
-
-Mortda Jabbar Hassan 
-
-2025/05/25
-
+we need improve 
+Potential Areas for Improvement / Interview Questions
+To push this project to a 10/10, consider these common interview "deep dives":
+Concurrency: How do you handle two people booking the same appointment slot at the exact same time?.
+Error Handling: Do you have a global exception handler, and how do you log errors without exposing sensitive database info?.
+Data Validation: Are you validating data only in the UI, or also in the Business Logic and Stored Procedures?.
+Testing: Have you implemented Unit Tests for the Business Logic layer? This is often the final piece missing from junior portfolios
