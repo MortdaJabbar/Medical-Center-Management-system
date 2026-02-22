@@ -126,27 +126,6 @@
   },
   {
     "ContainingType": "MCMSAPI.Controllers.AuthController",
-    "Method": "ChanagePassword",
-    "RelativePath": "api/Auth/ChangePassword/{UserId}",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "UserId",
-        "Type": "System.Guid",
-        "IsRequired": true
-      },
-      {
-        "Name": "dto",
-        "Type": "MCMSAPI.dtos.ChangePasswordDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "MCMSAPI.Controllers.AuthController",
     "Method": "Confirm2FA",
     "RelativePath": "api/Auth/confirm-2fa",
     "HttpMethod": "POST",
@@ -184,90 +163,36 @@
   },
   {
     "ContainingType": "MCMSAPI.Controllers.AuthController",
-    "Method": "GetProfile",
-    "RelativePath": "api/Auth/profile/{personId}",
-    "HttpMethod": "GET",
+    "Method": "Logout",
+    "RelativePath": "api/Auth/logout",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "personId",
-        "Type": "System.Guid",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "MCMSDAL.PersonProfileDto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "Parameters": [],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "MCMSAPI.Controllers.AuthController",
-    "Method": "Register",
-    "RelativePath": "api/Auth/register",
+    "Method": "LogoutAll",
+    "RelativePath": "api/Auth/logout-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MCMSAPI.Controllers.AuthController",
+    "Method": "Refresh",
+    "RelativePath": "api/Auth/refresh",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "MCMSDAL.RegisterUserDto",
+        "Type": "MCMSDAL.RefreshRequestDto",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "MCMSAPI.Controllers.AuthController",
-    "Method": "RequestPasswordReset",
-    "RelativePath": "api/Auth/request-password-reset",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "email",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "MCMSAPI.Controllers.AuthController",
-    "Method": "ResetPassword",
-    "RelativePath": "api/Auth/reset-password",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "MCMSAPI.dtos.ResetPasswordDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "MCMSAPI.Controllers.AuthController",
-    "Method": "VerifyEmail",
-    "RelativePath": "api/Auth/verify-email",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "token",
-        "Type": "System.String",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []

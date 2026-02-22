@@ -1,225 +1,175 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace MCMSDAL
 {
-    public class RefreshTokenRecord
+    public class RefreshTokenDto
     {
         public Guid TokenId { get; set; }
         public Guid UserId { get; set; }
-        public string TokenHash { get; set; } = "";
-        public DateTime ExpiresAtUtc { get; set; }
-        public DateTime? RevokedAtUtc { get; set; }
-        public string? ReplacedByTokenHash { get; set; }
+        public string TokenHash { get; set; } = string.Empty;
+
         public DateTime CreatedAtUtc { get; set; }
+        public DateTime ExpiresAtUtc { get; set; }
+
+        public DateTime? RevokedAtUtc { get; set; }
+        public Guid? ReplacedByTokenId { get; set; }
+
         public string? CreatedByIp { get; set; }
+        public string? RevokedByIp { get; set; }
         public string? UserAgent { get; set; }
     }
 
-    public static class RefreshTokenCsvData
+    public class RefreshTokenRotateResult
     {
-        private static readonly SemaphoreSlim _lock = new(1, 1);
+        public int Status { get; set; }              // 0 ok, 1 not found, 2 expired, 3 reuse
+        public Guid UserId { get; set; }
+        public Guid NewTokenId { get; set; }
+    }
 
-        private const string Header =
-            "TokenId,UserId,TokenHash,ExpiresAtUtc,RevokedAtUtc,ReplacedByTokenHash,CreatedAtUtc,CreatedByIp,UserAgent";
-
-        public static async Task EnsureFileAsync(string csvPath)
+    public class RefreshTokenData
+    {
+        public static async Task<Guid?> CreateRefreshTokenAsync(RefreshTokenDto dto)
         {
-            var dir = Path.GetDirectoryName(csvPath);
-            if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+            using var connection = new SqlConnection(AppConfig.ConnectionString);
+            using var command = new SqlCommand("CreateRefreshToken", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
 
-            if (!File.Exists(csvPath))
-                await File.WriteAllTextAsync(csvPath, Header + Environment.NewLine, Encoding.UTF8);
+            command.Parameters.AddWithValue("@UserId", dto.UserId);
+            command.Parameters.AddWithValue("@TokenHash", dto.TokenHash);
+            command.Parameters.AddWithValue("@ExpiresAtUtc", dto.ExpiresAtUtc.ToUniversalTime());
+            command.Parameters.AddWithValue("@CreatedByIp", (object?)dto.CreatedByIp ?? DBNull.Value);
+            command.Parameters.AddWithValue("@UserAgent", (object?)dto.UserAgent ?? DBNull.Value);
+
+            var tokenIdParam = new SqlParameter("@TokenId", SqlDbType.UniqueIdentifier)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(tokenIdParam);
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+
+            return tokenIdParam.Value != DBNull.Value ? (Guid?)tokenIdParam.Value : null;
         }
 
-        public static async Task<List<RefreshTokenRecord>> GetAllAsync(string csvPath)
+        public static async Task<RefreshTokenDto?> FindByHashAsync(string tokenHash)
         {
-            await EnsureFileAsync(csvPath);
-
-            await _lock.WaitAsync();
-            try
+            using var conn = new SqlConnection(AppConfig.ConnectionString);
+            using var cmd = new SqlCommand("GetRefreshTokenByHash", conn)
             {
-                var lines = await File.ReadAllLinesAsync(csvPath, Encoding.UTF8);
-                var list = new List<RefreshTokenRecord>();
+                CommandType = CommandType.StoredProcedure
+            };
 
-                // skip header
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    var line = lines[i];
-                    if (string.IsNullOrWhiteSpace(line)) continue;
+            cmd.Parameters.AddWithValue("@TokenHash", tokenHash);
 
-                    var cols = SplitCsvLine(line);
-                    if (cols.Count < 9) continue;
+            await conn.OpenAsync();
+            using var reader = await cmd.ExecuteReaderAsync();
 
-                    list.Add(new RefreshTokenRecord
-                    {
-                        TokenId = Guid.Parse(cols[0]),
-                        UserId = Guid.Parse(cols[1]),
-                        TokenHash = cols[2],
-                        ExpiresAtUtc = DateTime.Parse(cols[3], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
-                        RevokedAtUtc = string.IsNullOrWhiteSpace(cols[4]) ? null :
-                            DateTime.Parse(cols[4], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
-                        ReplacedByTokenHash = string.IsNullOrWhiteSpace(cols[5]) ? null : cols[5],
-                        CreatedAtUtc = DateTime.Parse(cols[6], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
-                        CreatedByIp = string.IsNullOrWhiteSpace(cols[7]) ? null : cols[7],
-                        UserAgent = string.IsNullOrWhiteSpace(cols[8]) ? null : cols[8],
-                    });
-                }
+            if (!await reader.ReadAsync())
+                return null;
 
-                return list;
-            }
-            finally
+            return new RefreshTokenDto
             {
-                _lock.Release();
-            }
+                TokenId = reader.GetGuid(reader.GetOrdinal("TokenId")),
+                UserId = reader.GetGuid(reader.GetOrdinal("UserId")),
+                TokenHash = reader.GetString(reader.GetOrdinal("TokenHash")),
+                CreatedAtUtc = reader.GetDateTime(reader.GetOrdinal("CreatedAtUtc")),
+                ExpiresAtUtc = reader.GetDateTime(reader.GetOrdinal("ExpiresAtUtc")),
+                RevokedAtUtc = reader.IsDBNull(reader.GetOrdinal("RevokedAtUtc")) ? null : reader.GetDateTime(reader.GetOrdinal("RevokedAtUtc")),
+                ReplacedByTokenId = reader.IsDBNull(reader.GetOrdinal("ReplacedByTokenId")) ? null : reader.GetGuid(reader.GetOrdinal("ReplacedByTokenId")),
+                CreatedByIp = reader.IsDBNull(reader.GetOrdinal("CreatedByIp")) ? null : reader.GetString(reader.GetOrdinal("CreatedByIp")),
+                RevokedByIp = reader.IsDBNull(reader.GetOrdinal("RevokedByIp")) ? null : reader.GetString(reader.GetOrdinal("RevokedByIp")),
+                UserAgent = reader.IsDBNull(reader.GetOrdinal("UserAgent")) ? null : reader.GetString(reader.GetOrdinal("UserAgent")),
+            };
         }
 
-        public static async Task AddAsync(string csvPath, RefreshTokenRecord rec)
+        public static async Task<RefreshTokenRotateResult> RotateAsync(
+            string oldTokenHash,
+            string newTokenHash,
+            DateTime newExpiresAtUtc,
+            string? requestIp,
+            string? userAgent)
         {
-            await EnsureFileAsync(csvPath);
-
-            var line = string.Join(",",
-                rec.TokenId.ToString(),
-                rec.UserId.ToString(),
-                EscapeCsv(rec.TokenHash),
-                rec.ExpiresAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
-                rec.RevokedAtUtc?.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture) ?? "",
-                EscapeCsv(rec.ReplacedByTokenHash ?? ""),
-                rec.CreatedAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
-                EscapeCsv(rec.CreatedByIp ?? ""),
-                EscapeCsv(rec.UserAgent ?? "")
-            );
-
-            await _lock.WaitAsync();
-            try
+            using var conn = new SqlConnection(AppConfig.ConnectionString);
+            using var cmd = new SqlCommand("RotateRefreshToken", conn)
             {
-                await File.AppendAllTextAsync(csvPath, line + Environment.NewLine, Encoding.UTF8);
-            }
-            finally
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@OldTokenHash", oldTokenHash);
+            cmd.Parameters.AddWithValue("@NewTokenHash", newTokenHash);
+            cmd.Parameters.AddWithValue("@NewExpiresAtUtc", newExpiresAtUtc.ToUniversalTime());
+            cmd.Parameters.AddWithValue("@RequestIp", (object?)requestIp ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@UserAgent", (object?)userAgent ?? DBNull.Value);
+
+            var newTokenIdParam = new SqlParameter("@NewTokenId", SqlDbType.UniqueIdentifier)
             {
-                _lock.Release();
-            }
+                Direction = ParameterDirection.Output
+            };
+            var userIdParam = new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
+            {
+                Direction = ParameterDirection.Output
+            };
+            var statusParam = new SqlParameter("@Status", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            cmd.Parameters.Add(newTokenIdParam);
+            cmd.Parameters.Add(userIdParam);
+            cmd.Parameters.Add(statusParam);
+
+            await conn.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+
+            return new RefreshTokenRotateResult
+            {
+                Status = statusParam.Value == DBNull.Value ? -1 : (int)statusParam.Value,
+                UserId = userIdParam.Value == DBNull.Value ? Guid.Empty : (Guid)userIdParam.Value,
+                NewTokenId = newTokenIdParam.Value == DBNull.Value ? Guid.Empty : (Guid)newTokenIdParam.Value
+            };
         }
 
-        public static async Task<bool> UpdateAsync(string csvPath, Func<RefreshTokenRecord, bool> predicate, Action<RefreshTokenRecord> update)
+        public static async Task<int> RevokeAsync(string tokenHash, string? requestIp)
         {
-            await EnsureFileAsync(csvPath);
-
-            await _lock.WaitAsync();
-            try
+            using var conn = new SqlConnection(AppConfig.ConnectionString);
+            using var cmd = new SqlCommand("RevokeRefreshToken", conn)
             {
-                var lines = await File.ReadAllLinesAsync(csvPath, Encoding.UTF8);
-                if (lines.Length <= 1) return false;
+                CommandType = CommandType.StoredProcedure
+            };
 
-                var header = lines[0];
-                var records = new List<RefreshTokenRecord>();
+            cmd.Parameters.AddWithValue("@TokenHash", tokenHash);
+            cmd.Parameters.AddWithValue("@RequestIp", (object?)requestIp ?? DBNull.Value);
 
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    var cols = SplitCsvLine(lines[i]);
-                    if (cols.Count < 9) continue;
-
-                    records.Add(new RefreshTokenRecord
-                    {
-                        TokenId = Guid.Parse(cols[0]),
-                        UserId = Guid.Parse(cols[1]),
-                        TokenHash = cols[2],
-                        ExpiresAtUtc = DateTime.Parse(cols[3], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
-                        RevokedAtUtc = string.IsNullOrWhiteSpace(cols[4]) ? null :
-                            DateTime.Parse(cols[4], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
-                        ReplacedByTokenHash = string.IsNullOrWhiteSpace(cols[5]) ? null : cols[5],
-                        CreatedAtUtc = DateTime.Parse(cols[6], CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal),
-                        CreatedByIp = string.IsNullOrWhiteSpace(cols[7]) ? null : cols[7],
-                        UserAgent = string.IsNullOrWhiteSpace(cols[8]) ? null : cols[8],
-                    });
-                }
-
-                bool changed = false;
-                foreach (var r in records)
-                {
-                    if (predicate(r))
-                    {
-                        update(r);
-                        changed = true;
-                    }
-                }
-
-                if (!changed) return false;
-
-                var outLines = new List<string> { header };
-                foreach (var r in records)
-                {
-                    outLines.Add(string.Join(",",
-                        r.TokenId.ToString(),
-                        r.UserId.ToString(),
-                        EscapeCsv(r.TokenHash),
-                        r.ExpiresAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
-                        r.RevokedAtUtc?.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture) ?? "",
-                        EscapeCsv(r.ReplacedByTokenHash ?? ""),
-                        r.CreatedAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
-                        EscapeCsv(r.CreatedByIp ?? ""),
-                        EscapeCsv(r.UserAgent ?? "")
-                    ));
-                }
-
-                await File.WriteAllLinesAsync(csvPath, outLines, Encoding.UTF8);
-                return true;
-            }
-            finally
+            var statusParam = new SqlParameter("@Status", SqlDbType.Int)
             {
-                _lock.Release();
-            }
+                Direction = ParameterDirection.Output
+            };
+            cmd.Parameters.Add(statusParam);
+
+            await conn.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+
+            return statusParam.Value == DBNull.Value ? -1 : (int)statusParam.Value;
         }
 
-        // -------- CSV helpers (simple + safe) --------
-        private static string EscapeCsv(string value)
+        public static async Task<bool> RevokeAllForUserAsync(Guid userId, string? requestIp)
         {
-            if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
-                return "\"" + value.Replace("\"", "\"\"") + "\"";
-            return value;
-        }
-
-        private static List<string> SplitCsvLine(string line)
-        {
-            var result = new List<string>();
-            var sb = new StringBuilder();
-            bool inQuotes = false;
-
-            for (int i = 0; i < line.Length; i++)
+            using var conn = new SqlConnection(AppConfig.ConnectionString);
+            using var cmd = new SqlCommand("RevokeAllRefreshTokensForUser", conn)
             {
-                char c = line[i];
+                CommandType = CommandType.StoredProcedure
+            };
 
-                if (inQuotes)
-                {
-                    if (c == '"')
-                    {
-                        if (i + 1 < line.Length && line[i + 1] == '"')
-                        {
-                            sb.Append('"');
-                            i++;
-                        }
-                        else
-                        {
-                            inQuotes = false;
-                        }
-                    }
-                    else sb.Append(c);
-                }
-                else
-                {
-                    if (c == ',')
-                    {
-                        result.Add(sb.ToString());
-                        sb.Clear();
-                    }
-                    else if (c == '"') inQuotes = true;
-                    else sb.Append(c);
-                }
-            }
+            cmd.Parameters.AddWithValue("@UserId", userId);
+            cmd.Parameters.AddWithValue("@RequestIp", (object?)requestIp ?? DBNull.Value);
 
-            result.Add(sb.ToString());
-            return result;
+            await conn.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            return true;
         }
     }
 }

@@ -1,142 +1,136 @@
-﻿using System.Security.Cryptography;
+﻿using MCMSDAL;
+using System.Security.Cryptography;
 using System.Text;
-using MCMSDAL;
 
-namespace MCMSBussinessLogic
+namespace MCMSBLL
 {
-    public class RefreshTokenIssueResult
+    public class RefreshTokenResult
     {
-        public string RefreshToken { get; set; } = "";
-        public string RefreshTokenHash { get; set; } = "";
-        public DateTime ExpiresAtUtc { get; set; }
-    }
-
-    public class RefreshTokenValidateResult
-    {
-        public bool IsValid { get; set; }
-        public bool IsReuseDetected { get; set; }
+        public bool Success { get; set; }
+        public bool ReuseDetected { get; set; }
         public Guid UserId { get; set; }
-        public string? Error { get; set; }
+        public string? NewRefreshToken { get; set; }
     }
-
-    public static class RefreshTokenService
+    public class RefreshTokenService
     {
-        // Generate raw refresh token (what client stores)
-        public static string GenerateRefreshToken()
-        {
-            var bytes = RandomNumberGenerator.GetBytes(64);
-            return Base64UrlEncode(bytes);
-        }
+        private const int RefreshTokenBytes = 64;
+        private const int RefreshTokenDays = 14;
 
-        // Hash token for storage (CSV/DB)
-        public static string HashToken(string token, string hashKey)
-        {
-            // HMAC-SHA256 so attacker can’t precompute hashes without hashKey
-            var keyBytes = Encoding.UTF8.GetBytes(hashKey);
-            var tokenBytes = Encoding.UTF8.GetBytes(token);
-            using var hmac = new HMACSHA256(keyBytes);
-            var hash = hmac.ComputeHash(tokenBytes);
-            return Convert.ToHexString(hash); // hex string
-        }
-
-        public static async Task<RefreshTokenIssueResult> IssueAsync(
+        // =========================================
+        // CREATE (called on successful login)
+        // =========================================
+        public static async Task<string?> CreateAsync(
             Guid userId,
-            string csvPath,
-            string hashKey,
-            int expiresInDays,
             string? ip,
             string? userAgent)
         {
-            var refresh = GenerateRefreshToken();
-            var hash = HashToken(refresh, hashKey);
+            var rawToken = GenerateSecureToken();
+            var hash = HashToken(rawToken);
 
-            var rec = new RefreshTokenRecord
+            var dto = new RefreshTokenDto
             {
-                TokenId = Guid.NewGuid(),
                 UserId = userId,
                 TokenHash = hash,
-                ExpiresAtUtc = DateTime.UtcNow.AddDays(expiresInDays),
-                RevokedAtUtc = null,
-                ReplacedByTokenHash = null,
-                CreatedAtUtc = DateTime.UtcNow,
+                ExpiresAtUtc = DateTime.UtcNow.AddDays(RefreshTokenDays),
                 CreatedByIp = ip,
                 UserAgent = userAgent
             };
 
-            await RefreshTokenCsvData.AddAsync(csvPath, rec);
+            var tokenId = await RefreshTokenData.CreateRefreshTokenAsync(dto);
 
-            return new RefreshTokenIssueResult
+            if (tokenId == null)
+                return null;
+
+            return rawToken; // return RAW token to client
+        }
+
+        // =========================================
+        // ROTATE (called from refresh endpoint)
+        // =========================================
+        public static async Task<RefreshTokenResult> RotateAsync(
+            string oldRawToken,
+            string? ip,
+            string? userAgent)
+        {
+            var oldHash = HashToken(oldRawToken);
+
+            var newRawToken = GenerateSecureToken();
+            var newHash = HashToken(newRawToken);
+
+            var rotateResult = await RefreshTokenData.RotateAsync(
+                oldHash,
+                newHash,
+                DateTime.UtcNow.AddDays(RefreshTokenDays),
+                ip,
+                userAgent
+            );
+
+            switch (rotateResult.Status)
             {
-                RefreshToken = refresh,
-                RefreshTokenHash = hash,
-                ExpiresAtUtc = rec.ExpiresAtUtc
-            };
+                case 0: // OK
+                    return new RefreshTokenResult
+                    {
+                        Success = true,
+                        UserId = rotateResult.UserId,
+                        NewRefreshToken = newRawToken
+                    };
+
+                case 3: // Reuse detected
+                    return new RefreshTokenResult
+                    {
+                        Success = false,
+                        ReuseDetected = true,
+                        UserId = rotateResult.UserId
+                    };
+
+                default: // expired / not found
+                    return new RefreshTokenResult
+                    {
+                        Success = false
+                    };
+            }
         }
 
-        public static async Task<RefreshTokenValidateResult> ValidateForRotationAsync(
-            string refreshToken,
-            string csvPath,
-            string hashKey)
+        // =========================================
+        // LOGOUT SINGLE SESSION
+        // =========================================
+        public static async Task<bool> RevokeAsync(
+            string rawToken,
+            string? ip)
         {
-            var hash = HashToken(refreshToken, hashKey);
-            var all = await RefreshTokenCsvData.GetAllAsync(csvPath);
+            var hash = HashToken(rawToken);
+            var status = await RefreshTokenData.RevokeAsync(hash, ip);
 
-            var rec = all.FirstOrDefault(x => x.TokenHash == hash);
-            if (rec == null)
-                return new RefreshTokenValidateResult { IsValid = false, Error = "Unknown refresh token." };
-
-            if (rec.ExpiresAtUtc < DateTime.UtcNow)
-                return new RefreshTokenValidateResult { IsValid = false, UserId = rec.UserId, Error = "Refresh token expired." };
-
-            // If revoked already => reuse attempt (very important)
-            if (rec.RevokedAtUtc != null)
-                return new RefreshTokenValidateResult
-                {
-                    IsValid = false,
-                    IsReuseDetected = true,
-                    UserId = rec.UserId,
-                    Error = "Refresh token reuse detected."
-                };
-
-            return new RefreshTokenValidateResult
-            {
-                IsValid = true,
-                UserId = rec.UserId
-            };
+            return status == 0;
         }
 
-        public static async Task RevokeAndReplaceAsync(
-            string oldRefreshToken,
-            string newRefreshTokenHash,
-            string csvPath,
-            string hashKey)
+        // =========================================
+        // LOGOUT ALL DEVICES
+        // =========================================
+        public static async Task RevokeAllAsync(
+            Guid userId,
+            string? ip)
         {
-            var oldHash = HashToken(oldRefreshToken, hashKey);
-
-            await RefreshTokenCsvData.UpdateAsync(
-                csvPath,
-                r => r.TokenHash == oldHash,
-                r =>
-                {
-                    r.RevokedAtUtc = DateTime.UtcNow;
-                    r.ReplacedByTokenHash = newRefreshTokenHash;
-                });
+            await RefreshTokenData.RevokeAllForUserAsync(userId, ip);
         }
 
-        public static async Task RevokeAllForUserAsync(Guid userId, string csvPath)
+        // =========================================
+        // INTERNAL: Secure Token Generator
+        // =========================================
+        private static string GenerateSecureToken()
         {
-            await RefreshTokenCsvData.UpdateAsync(
-                csvPath,
-                r => r.UserId == userId && r.RevokedAtUtc == null,
-                r => r.RevokedAtUtc = DateTime.UtcNow);
+            var bytes = RandomNumberGenerator.GetBytes(RefreshTokenBytes);
+            return Convert.ToBase64String(bytes);
         }
 
-        private static string Base64UrlEncode(byte[] bytes)
+        // =========================================
+        // INTERNAL: SHA256 Hash
+        // =========================================
+        private static string HashToken(string token)
         {
-            return Convert.ToBase64String(bytes)
-                .Replace("+", "-")
-                .Replace("/", "_")
-                .TrimEnd('=');
+            using var sha = SHA256.Create();
+            var hashBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(token));
+            return Convert.ToHexString(hashBytes);
         }
     }
 }
