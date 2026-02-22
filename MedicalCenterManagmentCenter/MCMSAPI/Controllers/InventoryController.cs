@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MCMSAPI.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/Inventory")]
     
     public class InventoryController : ControllerBase
