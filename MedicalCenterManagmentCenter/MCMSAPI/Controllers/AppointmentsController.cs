@@ -10,6 +10,7 @@ namespace MCMSAPI.Controllers
     
     [Route("api/Appointemnts")]
     [ApiController]
+    [Authorize]
  
     public class AppointmentsController : ControllerBase
     {
@@ -85,12 +86,27 @@ namespace MCMSAPI.Controllers
         // GET: api/Appointments/by-patient/{patientId}
         [Authorize(Roles = "Patient")]
         [HttpGet("by-patient/{patientId}")]
-        public async Task<IActionResult> GetByPatient(Guid patientId)
+        public async Task<IActionResult> GetByPatient(Guid patientId,
+    [FromServices] IAuthorizationService authorizationService)
         {
+            if (patientId == Guid.Empty)
+                return BadRequest("Invalid Patient ID");
+
+            var patient = await Patient.FindPatientByIdAsync(patientId);
+
+            if (patient == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
             var appointments = await Appointment.GetByPatientIdAsync(patientId);
             return Ok(appointments);
         }
-
 
         [Authorize(Roles = "Staff")]
         [HttpGet("patientSummary")]
