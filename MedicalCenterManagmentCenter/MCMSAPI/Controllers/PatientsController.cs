@@ -90,8 +90,24 @@ namespace MCMSAPI.Controllers
         }
         [Authorize(Roles = "Patient")]
         [HttpGet("appointments/{id}")]
-        public async Task<ActionResult<List<AppointmentPatientDto>>> GetAppointments(Guid id)
+        public async Task<ActionResult<List<AppointmentPatientDto>>> GetAppointments(Guid id,
+    [FromServices] IAuthorizationService authorizationService)
         {
+            if (id == Guid.Empty)
+                return BadRequest("Invalid Patient ID");
+
+            var patient = await Patient.FindPatientByIdAsync(id);
+
+            if (patient == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
 
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
@@ -101,33 +117,73 @@ namespace MCMSAPI.Controllers
         }
         [Authorize(Roles = "Patient")]
         [HttpGet("prescriptions/{id}")]
-        public async Task<ActionResult<List<PrescriptionPatientDto>>> GetPrescriptions(Guid id)
+        public async Task<ActionResult<List<PrescriptionPatientDto>>> GetPrescriptions(Guid id,
+    [FromServices] IAuthorizationService authorizationService)
         {
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
-            
+
+            var patient = await Patient.FindPatientByIdAsync(id);
+
+            if (patient == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
+           
 
             var result = await Patient.GetPrescriptionsByPatientIdAsync(id);
             return Ok(result);
         }
         [Authorize(Roles = "Patient")]
         [HttpGet("tests/{id}")]
-        public async Task<ActionResult<List<TestPatientsDto>>> GetTests(Guid id)
+        public async Task<ActionResult<List<TestPatientsDto>>> GetTests(Guid id,
+    [FromServices] IAuthorizationService authorizationService)
         {
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
-            
+
+            var patient = await Patient.FindPatientByIdAsync(id);
+
+            if (patient == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
 
             var result = await Patient.GetTestsByPatientIdAsync(id);
             return Ok(result);
         }
         [Authorize(Roles = "Patient")]
         [HttpGet("dashboard/{id}")]
-        public async Task<ActionResult<PatientDashboardDto>> GetDashboard(Guid id)
+        public async Task<ActionResult<PatientDashboardDto>> GetDashboard(Guid id,
+    [FromServices] IAuthorizationService authorizationService)
         {
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
-             
+
+            var patient = await Patient.FindPatientByIdAsync(id);
+
+            if (patient == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
 
             var result = await Patient.GetPatientDashboardStatsAsync(id);
             if (result == null)
@@ -137,10 +193,24 @@ namespace MCMSAPI.Controllers
         }
         [Authorize(Roles = "Patient")]
         [HttpGet("Invoices/{patientId}")]
-        public async Task<IActionResult> GetByPatient(Guid patientId)
+        public async Task<IActionResult> GetByPatient(Guid patientId,
+    [FromServices] IAuthorizationService authorizationService)
         {
-             
+            if (patientId == Guid.Empty)
+                return BadRequest("Invalid Patient ID");
 
+            var patient = await Patient.FindPatientByIdAsync(patientId);
+
+            if (patient == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
             var payments = await Patient.GetInvoicesForPatientAsync(patientId);
             return Ok(payments);
         }

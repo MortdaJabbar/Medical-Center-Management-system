@@ -34,7 +34,7 @@ namespace MCMSAPI.Controllers
             // 2️⃣ Ownership check
             var authResult = await authorizationService.AuthorizeAsync(
                 User,
-                patient.DTO.Person.PersonId,
+                patient.PersonId,
                 "OwnerOnly");
 
             if (!authResult.Succeeded)
