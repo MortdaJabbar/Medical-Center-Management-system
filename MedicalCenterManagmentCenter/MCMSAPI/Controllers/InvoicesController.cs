@@ -23,8 +23,23 @@ namespace MCMSAPI.Controllers
         // GET: api/Invoices/by-patient/{patientId}
         [Authorize(Roles = "Patient")]
         [HttpGet("by-patient/{patientId}")]
-        public async Task<ActionResult<List<PatientInvoiceDto>>> GetByPatient(Guid patientId)
+        public async Task<ActionResult<List<PatientInvoiceDto>>> GetByPatient(Guid patientId,[FromServices] IAuthorizationService authorizationService)
         {
+            // 1️⃣ Load patient
+            var patient = await Patient.FindPatientByIdAsync(patientId);
+
+            if (patient == null)
+                return NotFound();
+
+            // 2️⃣ Ownership check
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.DTO.Person.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
+
             var result = await Invoice.GetByPatientIdAsync(patientId);
             return Ok(result);
         }
