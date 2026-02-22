@@ -183,18 +183,22 @@
   },
   {
     "ContainingType": "MCMSAPI.Controllers.AuthController",
+    "Method": "Me",
+    "RelativePath": "api/Auth/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MCMSAPI.Controllers.AuthController",
     "Method": "Refresh",
     "RelativePath": "api/Auth/refresh",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "MCMSDAL.RefreshRequestDto",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

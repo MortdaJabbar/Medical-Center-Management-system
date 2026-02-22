@@ -4,6 +4,7 @@ function loadUnpaidPrescriptions() {
     $.ajax({
         url: 'https://localhost:7119/api/Invoices/unpaid-prescriptions',
         method: 'GET',
+        xhrFields: { withCredentials: true },
         success: function (data) {
             const tbody = $('#unpaid-prescriptions-body');
             tbody.empty();
@@ -32,7 +33,8 @@ function loadUnpaidPrescriptions() {
 
              PagationDataTable("#UnpaidPrescriptions",[4],10);
         },
-        error: function () {
+        error: function (xhr) {
+            if (xhr && xhr.status === 401) return window.location.href = 'login.html';
             alert('❌ Failed to load unpaid prescriptions.');
         }
     });

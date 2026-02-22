@@ -13,6 +13,7 @@ function loadAvailableEntities() {
  $.ajax({
   url: url,
   method: "GET",
+  xhrFields: { withCredentials: true },
   success: function(data) {
     const select = $('#personId');
     select.empty();
@@ -24,7 +25,7 @@ function loadAvailableEntities() {
     });
   },
   error: function(xhr) {
-     
+     if (xhr && xhr.status === 401) return window.location.href = 'login.html';
     showErrorMessage("❌ Failed to load account list.");
   }
 });

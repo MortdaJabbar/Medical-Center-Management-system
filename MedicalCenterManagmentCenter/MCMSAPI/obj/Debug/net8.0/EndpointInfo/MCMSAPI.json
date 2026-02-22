@@ -260,25 +260,6 @@
         "tags": [
           "Auth"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshRequestDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshRequestDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshRequestDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK"
@@ -300,6 +281,18 @@
     },
     "/api/Auth/logout-all": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/me": {
+      "get": {
         "tags": [
           "Auth"
         ],
@@ -3749,24 +3742,6 @@
             "nullable": true
           },
           "pharmacistImage": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RefreshRequestDto": {
-        "type": "object",
-        "properties": {
-          "refreshToken": {
-            "type": "string",
-            "nullable": true
-          },
-          "ipAddress": {
-            "type": "string",
-            "nullable": true
-          },
-          "userAgent": {
             "type": "string",
             "nullable": true
           }

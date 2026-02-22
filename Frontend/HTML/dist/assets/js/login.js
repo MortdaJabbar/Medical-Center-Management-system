@@ -4,50 +4,53 @@ $('.login-form').on('submit', function (e) {
 
     const email = $('#email').val().trim();
     const password = $('#password').val();
-    const rememberMe = $('#rememberMe').is(':checked');
+    const rememberMe = $('#remember-check').is(':checked');
 
     $.ajax({
         url: 'https://localhost:7119/api/auth/login',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email, password }),
-        success: function (data) {
-            // ✅ Successful login with token
-            if (data.token) {
-                const storage = localStorage;
+        xhrFields: { withCredentials: true },
 
-                storage.setItem('token', data.token);
-                storage.setItem('roleId', parseInt(data.roleId));
-                storage.setItem('userId', data.userId);
-                storage.setItem('entityId', data.entityId);
-                storage.setItem('role', data.role);
+       success: function (data) {
 
-                FrowardToDashboardPage(parseInt(data.roleId));
-            }
+    // 🔐 2FA required
+    if (data.message && data.message.includes("2FA")) {
 
-            // 🔐 2FA required
-            else if (data.message && data.message.includes("2FA")) {
-                localStorage.setItem('tempUserId', data.userId);
+        localStorage.setItem('tempUserId', data.userId);
 
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Two-Factor Authentication ',
-                    text: 'code has been sent to your email please enter it to log in ',
-                    confirmButtonText: 'Proceed'
-                }).then(() => {
-                    window.location.href = "TwoFactorAuthentication.html";
-                });
-            }
+        Swal.fire({
+            icon: 'info',
+            title: 'Two-Factor Authentication',
+            text: 'Code has been sent to your email please enter it to log in',
+            confirmButtonText: 'Proceed'
+        }).then(() => {
+            window.location.href = "TwoFactorAuthentication.html";
+        });
 
-            // ❌ Login failed
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed',
-                    text: 'Incorrect email or password.'
-                });
-            }
-        },
+        return;
+    }
+
+    // ✅ Successful login
+    if (data.roleId) {
+
+        localStorage.setItem('roleId', parseInt(data.roleId));
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('entityId', data.entityId);
+        localStorage.setItem('role', data.role);
+
+        FrowardToDashboardPage(parseInt(data.roleId));
+        return;
+    }
+
+    // ❌ Fallback
+    Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: 'Incorrect email or password.'
+    });
+},
 
         // ⚠️ Server error
         error: function (xhr) {

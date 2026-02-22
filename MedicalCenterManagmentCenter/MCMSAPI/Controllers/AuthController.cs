@@ -5,6 +5,7 @@ using MCMSBussinessLogic;
 using MCMSDAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace MCMSAPI.Controllers
 {
@@ -122,22 +123,21 @@ namespace MCMSAPI.Controllers
         // ======================================================
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
+        public async Task<IActionResult> Refresh()
         {
-            if (string.IsNullOrWhiteSpace(dto.RefreshToken))
-                return BadRequest("Refresh token required.");
+            // ✅ Read refresh token from cookie instead of body
+            if (!Request.Cookies.TryGetValue("refreshToken", out var oldRefreshToken))
+                return Unauthorized("Refresh token missing.");
 
             var rotateResult = await RefreshTokenService.RotateAsync(
-                dto.RefreshToken,
+                oldRefreshToken,
                 HttpContext.Connection.RemoteIpAddress?.ToString(),
                 Request.Headers.UserAgent.ToString()
             );
 
             if (!rotateResult.Success)
             {
-                if (rotateResult.ReuseDetected)
-                    return Unauthorized("Session compromised.");
-
+                ClearAuthCookies();
                 return Unauthorized("Invalid refresh token.");
             }
 
@@ -147,7 +147,7 @@ namespace MCMSAPI.Controllers
 
             var jwt = GetJwtOptions();
 
-            var accessToken = JwtHelper.GenerateJwtToken(
+            var newAccessToken = JwtHelper.GenerateJwtToken(
                 user.UserId,
                 user.PersonId,
                 user.RoleId,
@@ -157,12 +157,14 @@ namespace MCMSAPI.Controllers
                 jwt.ExpiresInMinutes
             );
 
+            // ✅ Reset cookies
+            SetAccessTokenCookie(newAccessToken, jwt.ExpiresInMinutes);
+            SetRefreshTokenCookie(rotateResult.NewRefreshToken);
+
             return Ok(new
             {
-                accessToken,
-                refreshToken = rotateResult.NewRefreshToken,
-                accessTokenExpiresAtUtc = DateTime.UtcNow.AddMinutes(jwt.ExpiresInMinutes),
-                refreshTokenExpiresAtUtc = DateTime.UtcNow.AddDays(14)
+                message = "Token refreshed",
+                accessTokenExpiresAtUtc = DateTime.UtcNow.AddMinutes(jwt.ExpiresInMinutes)
             });
         }
 
@@ -177,13 +179,25 @@ namespace MCMSAPI.Controllers
                 User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value
                 ?? User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
-            if (!Guid.TryParse(userIdClaim, out var userId))
-                return BadRequest("Invalid token claims.");
+            if (!Request.Cookies.TryGetValue("refreshToken", out var oldRefreshToken))
+            {
+                if (!Guid.TryParse(userIdClaim, out var userId))
+                    return BadRequest("Invalid token claims.");
 
-            await RefreshTokenService.RevokeAllAsync(
-                userId,
-                HttpContext.Connection.RemoteIpAddress?.ToString()
-            );
+                await RefreshTokenService.RevokeAllAsync(
+                    userId,
+                    HttpContext.Connection.RemoteIpAddress?.ToString()
+                );
+
+            }
+            else 
+            {
+                await RefreshTokenService.RevokeAsync(
+                        oldRefreshToken,
+                        HttpContext.Connection.RemoteIpAddress?.ToString()
+                    );
+            }
+                ClearAuthCookies();
 
             return Ok("Logged out successfully.");
         }
@@ -210,6 +224,29 @@ namespace MCMSAPI.Controllers
             return Ok("Logged out from all devices.");
         }
 
+
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            var userId =
+                User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value
+                ?? User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+            var roleId = User.Claims.FirstOrDefault(c => c.Type == "roleId")?.Value;
+            var personId = User.Claims.FirstOrDefault(c => c.Type == "personId")?.Value;
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            
+
+            return Ok(new
+            {
+                userId,
+                roleId,
+                personId,
+                role
+            });
+        }
         // ======================================================
         // PRIVATE HELPER: Issue Tokens
         // ======================================================
@@ -233,12 +270,15 @@ namespace MCMSAPI.Controllers
                 Request.Headers.UserAgent.ToString()
             );
 
+            // ✅ Set both tokens in HttpOnly cookies
+            SetAccessTokenCookie(accessToken, jwt.ExpiresInMinutes);
+            SetRefreshTokenCookie(refreshToken);
+
+            // ❌ Do NOT return tokens in body anymore
             return Ok(new
             {
-                accessToken,
-                refreshToken,
+                message = "Login successful",
                 accessTokenExpiresAtUtc = DateTime.UtcNow.AddMinutes(jwt.ExpiresInMinutes),
-                refreshTokenExpiresAtUtc = DateTime.UtcNow.AddDays(14),
                 userId = user.UserId,
                 entityId = user.PersonId,
                 roleId = user.RoleId,

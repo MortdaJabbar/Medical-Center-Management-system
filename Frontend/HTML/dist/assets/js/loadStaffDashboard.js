@@ -2,6 +2,7 @@ $(document).ready(function () {
     $.ajax({
         url: "https://localhost:7119/api/Staff/staff-stats",
         method: "GET",
+        xhrFields: { withCredentials: true },
         success: function (data) {
             // عرض الإجماليات في الكروت
             $('#totalPayments').text(data.totalPayments + "$");
@@ -10,6 +11,7 @@ $(document).ready(function () {
             $('#totalTests').text(data.totalTests);
         },
         error: function (xhr, status, error) {
+            if (xhr && xhr.status === 401) return window.location.href = 'login.html';
             showErrorMessage(`Failed to load staff dashboard stats:${error}`);
         }
     });

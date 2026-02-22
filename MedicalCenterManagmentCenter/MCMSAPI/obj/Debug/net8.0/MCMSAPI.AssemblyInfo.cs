@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MCMSAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d308a66869d5b8c084f69b8762a50dd6ad866de")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c51a922500b43cb1bf2781866b9af813c0c8c373")]
 [assembly: System.Reflection.AssemblyProductAttribute("MCMSAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MCMSAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

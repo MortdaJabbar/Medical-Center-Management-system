@@ -1,6 +1,8 @@
 ﻿
+using MCMSAPI.Authorization;
 using MCMSAPI.dtos.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -19,13 +21,15 @@ namespace MCMSAPI
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll",
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader();
-                    });
+                options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5500") // exact origin
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // required
+        });
+
             });
  
 
@@ -48,6 +52,18 @@ namespace MCMSAPI
                     ValidAudience = jwtSettings["Audience"]
 
             };
+            options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    if (context.Request.Cookies.ContainsKey("accessToken"))
+                    {
+                        context.Token = context.Request.Cookies["accessToken"];
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+
         });
 
 
@@ -80,7 +96,7 @@ namespace MCMSAPI
             });
 
 
-
+            builder.Services.AddSingleton<IAuthorizationHandler, OwnershipHandler>();
             builder.Services.AddAuthorization();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
@@ -91,14 +107,10 @@ namespace MCMSAPI
            
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddCors(options =>
+            builder.Services.AddAuthorization(options =>
             {
-                options.AddPolicy("AllowFrontend", policy =>
-                {
-                    policy.AllowAnyOrigin() 
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+                options.AddPolicy("OwnerOnly", policy =>
+                    policy.Requirements.Add(new OwnershipRequirement()));
             });
             builder.Services.AddSwaggerGen();
 

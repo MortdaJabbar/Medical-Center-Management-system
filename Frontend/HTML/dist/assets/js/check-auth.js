@@ -1,81 +1,49 @@
 (function () {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    const role = localStorage.getItem("role") || sessionStorage.getItem("role");
 
-    // تحقق من وجود التوكن
-    if (!token ) {
-        
-        window.location.href = "login.html";
-        return;
-    }
-
-if (isTokenExpired(token)) {
-     
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("role");
-
-       
-        window.location.href = "login.html";
-        return;
-    }
-
-    // إعداد الهيدر لكل طلب AJAX
-     
-
-    // التعامل مع أخطاء AJAX
-    $(document).ajaxError(function (event, jqxhr) {
-        if (jqxhr.status === 401 || jqxhr.status === 403) {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = "login.html";
-        } else if (jqxhr.status === 404) {
-            window.location.href = "404.html";
-        }
-        else if (jqxhr.status === 500) {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = "500.html";
-        }
+    // Always send cookies
+    $.ajaxSetup({
+        xhrFields: { withCredentials: true }
     });
 
-   
-    const meta = document.querySelector('meta[name="allowed-roles"]');
-    if (meta) {
-        const allowedRoles = meta.content.split(',').map(r => r.trim());
+    // Call backend to validate session
+    $.ajax({
+        url: "https://localhost:7119/api/auth/me",
+        method: "GET",
+        success: function (user) {
+
+            // Save UI data only (not tokens)
+            localStorage.setItem("role", user.role);
+            localStorage.setItem("roleId", user.roleId);
+            localStorage.setItem("userId", user.userId);
+            localStorage.setItem("entityId", user.personId);
+
+            validateRoleAccess(user.role);
+        },
+        error: function (xhr, status, error) {
+                // If unauthorized, force login. For network/CORS/server errors, avoid redirect loop
+                if (xhr && xhr.status === 401) {
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                // Network errors or CORS issues often have status 0; warn instead of redirecting
+                console.warn('check-auth failed', { status: xhr && xhr.status, statusText: xhr && xhr.statusText, error });
+            }
+    });
+
+    function validateRoleAccess(role) {
+
+        const meta = document.querySelector('meta[name="allowed-roles"]');
+
+        if (!meta) return;
+
+        const allowedRoles = meta.content
+            .split(',')
+            .map(r => r.trim());
+
         if (!allowedRoles.includes(role)) {
-          
-        
-            localStorage.clear();
-            sessionStorage.clear();
-             window.location.href = "403.html";
-
-              
-            return;
-        }   
-     
-    }
-
-
-
-
-
-
-})();
-
-
- function isTokenExpired(token) {
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const exp = payload.exp;
-            const now = Math.floor(Date.now() / 1000); // الآن بالثواني
-
-            return exp < now;
-        } catch (e) {
-            console.error("Failed to parse token", e);
-            return true; // احتياطاً اعتبره منتهي إذا صار خطأ
+            window.location.href = "403.html";
         }
     }
 
-
+})();

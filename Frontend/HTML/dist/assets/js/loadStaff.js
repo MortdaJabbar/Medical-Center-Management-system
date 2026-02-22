@@ -1,7 +1,8 @@
-function fetchStaff() {
+function fetchStaff(retried = false) {
     $.ajax({
         url: `https://localhost:7119/api/Staff/all`,
         method: "GET",
+        xhrFields: { withCredentials: true },
         success: function (data) {
             const tbody = $("#staff-body");
             tbody.empty();
@@ -50,6 +51,16 @@ function fetchStaff() {
             PagationDataTable("#myTable",[7],10);
         },
         error: function (err) {
+            if (err.status === 401) {
+                if (!retried && typeof AuthClient !== 'undefined' && AuthClient.refresh) {
+                    AuthClient.refresh()
+                        .then(function () { fetchStaff(true); })
+                        .catch(function () { window.location.href = 'login.html'; });
+                    return;
+                }
+                window.location.href = 'login.html';
+                return;
+            }
             switch (err.status) {
                 case 404:
                     showErrorMessage("The requested staff data could not be found.");

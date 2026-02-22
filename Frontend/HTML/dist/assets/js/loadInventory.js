@@ -1,8 +1,9 @@
 function loadInventory() {
-   $.ajax({
-  url: "https://localhost:7119/api/Inventory/AllDetails",
-  method: "GET",
-  success: function(data) {
+  $.ajax({
+      url: "https://localhost:7119/api/Inventory/AllDetails",
+      method: "GET",
+      xhrFields: { withCredentials: true },
+      success: function(data) {
     const tbody = $("#inventory-body");
     tbody.empty();
 
@@ -24,11 +25,21 @@ function loadInventory() {
     });
     PagationDataTable("#myTable",[],10);
   },
-  error: function(xhr) {
-     tbody.empty();
+      error: function(xhr) {
+        if (xhr && xhr.status === 401) {
+          if (typeof AuthClient !== 'undefined' && AuthClient.refresh) {
+            AuthClient.refresh()
+              .then(function () { loadInventory(); })
+              .catch(function () { window.location.href = 'login.html'; });
+            return;
+          }
+          window.location.href = 'login.html';
+          return;
+        }
+        tbody.empty();
 
-    showErrorMessage("❌ Failed to load inventory data.");
-  }
+        showErrorMessage("❌ Failed to load inventory data.");
+      }
 });
 
 }

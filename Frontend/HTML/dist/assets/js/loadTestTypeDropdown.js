@@ -5,6 +5,7 @@ $(document).ready(function () {
         $.ajax({
             url: 'https://localhost:7119/api/TestTypes/all',
             method: 'GET',
+            xhrFields: { withCredentials: true },
             success: function (data) {
                 testTypes = data;
 
@@ -15,7 +16,8 @@ $(document).ready(function () {
                     select.append(`<option value="${test.testTypeId}" data-cost="${test.cost}">${test.name}</option>`);
                 });
             },
-            error: function () {
+            error: function (xhr) {
+                if (xhr && xhr.status === 401) return window.location.href = 'login.html';
                 alert('Failed to load test types.');
             }
         });

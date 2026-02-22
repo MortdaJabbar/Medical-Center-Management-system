@@ -2,6 +2,7 @@ function loadUsers() {
     $.ajax({
         url: "https://localhost:7119/api/Users/detailed",
         method: "GET",
+        xhrFields: { withCredentials: true },
         success: function (users) {
             $("#Users-body").empty();
 
@@ -37,7 +38,7 @@ function loadUsers() {
 PagationDataTable("#myTable",[],10);
         },
         error: function (xhr) {
-            
+            if (xhr && xhr.status === 401) window.location.href = 'login.html';
         }
     });
 }

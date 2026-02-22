@@ -2,6 +2,7 @@ function loadAllInvoices() {
     $.ajax({
         url: 'https://localhost:7119/api/Invoices/detailed',
         method: 'GET',
+        xhrFields: { withCredentials: true },
         success: function (data) {
             const tableBody = $('#invoices-body');
             tableBody.empty();
@@ -41,7 +42,17 @@ function loadAllInvoices() {
                  PagationDataTable("#invoicesTable",[7],10);
             });
         },
-        error: function () {
+        error: function (xhr) {
+            if (xhr && xhr.status === 401) {
+                if (typeof AuthClient !== 'undefined' && AuthClient.refresh) {
+                    AuthClient.refresh()
+                        .then(function () { loadAllInvoices(); })
+                        .catch(function () { window.location.href = 'login.html'; });
+                    return;
+                }
+                window.location.href = 'login.html';
+                return;
+            }
             alert("Failed to load invoices.");
         }
     });

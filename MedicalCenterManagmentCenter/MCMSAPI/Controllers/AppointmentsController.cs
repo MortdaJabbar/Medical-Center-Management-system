@@ -49,8 +49,7 @@ namespace MCMSAPI.Controllers
 
             if (Appoint == null) return NotFound("No Appointment With  id");
 
-            
-
+        
             _mapper.Map(dto, Appoint);
             bool result = await Appoint.UpdateAppointmentAsync();
             return result ? Ok("Appointment updated successfully.") : NotFound("Appointment not found.");

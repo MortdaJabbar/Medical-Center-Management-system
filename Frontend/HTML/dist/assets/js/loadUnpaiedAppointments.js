@@ -2,6 +2,7 @@ function loadUnpaidAppointments() {
     $.ajax({
         url: 'https://localhost:7119/api/Invoices/unpaid-appointments',
         method: 'GET',
+        xhrFields: { withCredentials: true },
         success: function (data) {
             const tbody = $('#unpaid-appointments-body');
             tbody.empty();
@@ -33,7 +34,8 @@ function loadUnpaidAppointments() {
 
              PagationDataTable("#UnpaidAppointments",[4],10);
         },
-        error: function () {
+        error: function (xhr) {
+            if (xhr && xhr.status === 401) return window.location.href = 'login.html';
             alert('❌ Failed to load unpaid appointments.');
         }
     });

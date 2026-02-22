@@ -3,40 +3,16 @@
   "WorkspaceRootPath": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\authorization\\personowneroradminhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\authorization\\personowneroradminhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsbussinesslogic\\refreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|solutionrelative:mcmsbussinesslogic\\refreshtokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\authorization\\personowneroradminrequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\authorization\\personowneroradminrequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsdal\\refreshtokenrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|solutionrelative:mcmsdal\\refreshtokenrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsdal\\useraccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|solutionrelative:mcmsdal\\useraccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsbussinesslogic\\useraccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|solutionrelative:mcmsbussinesslogic\\useraccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsbussinesslogic\\staff.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|solutionrelative:mcmsbussinesslogic\\staff.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsbussinesslogic\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|solutionrelative:mcmsbussinesslogic\\test.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsbussinesslogic\\testtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AC861410-FE1B-45B9-8937-9C3E8FA0679F}|MCMSBussinessLogic\\MCMSBussinessLogic.csproj|solutionrelative:mcmsbussinesslogic\\testtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsdal\\appconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BD635A5C-1250-4B8E-976E-B0C0C9AC4533}|MCMSDAL\\MCMSDAL.csproj|solutionrelative:mcmsdal\\appconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,119 +22,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PersonOwnerOrAdminHandler.cs",
+              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Authorization\\PersonOwnerOrAdminHandler.cs",
+              "RelativeDocumentMoniker": "MCMSAPI\\Authorization\\PersonOwnerOrAdminHandler.cs",
+              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Authorization\\PersonOwnerOrAdminHandler.cs",
+              "RelativeToolTip": "MCMSAPI\\Authorization\\PersonOwnerOrAdminHandler.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAuwBEAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T09:29:02.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "RefreshTokenService.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\RefreshTokenService.cs",
-              "RelativeDocumentMoniker": "MCMSBussinessLogic\\RefreshTokenService.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\RefreshTokenService.cs",
-              "RelativeToolTip": "MCMSBussinessLogic\\RefreshTokenService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
+              "Title": "PersonOwnerOrAdminRequirement.cs",
+              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Authorization\\PersonOwnerOrAdminRequirement.cs",
+              "RelativeDocumentMoniker": "MCMSAPI\\Authorization\\PersonOwnerOrAdminRequirement.cs",
+              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Authorization\\PersonOwnerOrAdminRequirement.cs",
+              "RelativeToolTip": "MCMSAPI\\Authorization\\PersonOwnerOrAdminRequirement.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-22T06:38:43.398Z",
+              "WhenOpened": "2026-02-22T09:28:28.691Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UserAccount.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\UserAccount.cs",
-              "RelativeDocumentMoniker": "MCMSDAL\\UserAccount.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\UserAccount.cs",
-              "RelativeToolTip": "MCMSDAL\\UserAccount.cs",
-              "ViewState": "AgIAAIEBAAAAAAAAAAAAwJABAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:50:02.128Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Staff.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\Staff.cs",
-              "RelativeDocumentMoniker": "MCMSBussinessLogic\\Staff.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\Staff.cs",
-              "RelativeToolTip": "MCMSBussinessLogic\\Staff.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:49:45.703Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Test.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\Test.cs",
-              "RelativeDocumentMoniker": "MCMSBussinessLogic\\Test.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\Test.cs",
-              "RelativeToolTip": "MCMSBussinessLogic\\Test.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:49:42.315Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "TestType.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\TestType.cs",
-              "RelativeDocumentMoniker": "MCMSBussinessLogic\\TestType.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\TestType.cs",
-              "RelativeToolTip": "MCMSBussinessLogic\\TestType.cs",
-              "ViewState": "AgIAAIAAAAAAAAAAAAAAwIgAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:49:38.882Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "RefreshTokenRecord.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\RefreshTokenRecord.cs",
-              "RelativeDocumentMoniker": "MCMSDAL\\RefreshTokenRecord.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\RefreshTokenRecord.cs",
-              "RelativeToolTip": "MCMSDAL\\RefreshTokenRecord.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAhAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Program.cs",
+              "RelativeDocumentMoniker": "MCMSAPI\\Program.cs",
+              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Program.cs",
+              "RelativeToolTip": "MCMSAPI\\Program.cs",
+              "ViewState": "AgIAAHoAAAAAAAAAAAAAAIUAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:44:51.831Z",
+              "WhenOpened": "2026-02-22T07:01:17.383Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "AppConfig.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\AppConfig.cs",
-              "RelativeDocumentMoniker": "MCMSDAL\\AppConfig.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSDAL\\AppConfig.cs",
-              "RelativeToolTip": "MCMSDAL\\AppConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:13:14.146Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\AuthController.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "MCMSAPI\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAIsAAAAAAAAAAAAxwJoAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T14:02:28.49Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "UserAccount.cs",
-              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\UserAccount.cs",
-              "RelativeDocumentMoniker": "MCMSBussinessLogic\\UserAccount.cs",
-              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSBussinessLogic\\UserAccount.cs",
-              "RelativeToolTip": "MCMSBussinessLogic\\UserAccount.cs",
-              "ViewState": "AgIAAGoAAAAAAAAAAAAAAAEAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:49:50.07Z"
             }
           ]
         }

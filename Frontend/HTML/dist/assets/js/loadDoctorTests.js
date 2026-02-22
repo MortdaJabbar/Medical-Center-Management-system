@@ -8,7 +8,8 @@ $(document).ready(function () {
     $.ajax({
         url: `https://localhost:7119/api/Doctors/tests/${doctorId}`,
         method: "GET",
-         
+        xhrFields: { withCredentials: true },
+        
         success: function (tests) {
             $("#tests-body").empty();
 
@@ -34,6 +35,16 @@ $(document).ready(function () {
 
         },
         error: function (xhr) {
+            if (xhr && xhr.status === 401) {
+                if (typeof AuthClient !== 'undefined' && AuthClient.refresh) {
+                    AuthClient.refresh()
+                        .then(function () { location.reload(); })
+                        .catch(function () { window.location.href = 'login.html'; });
+                    return;
+                }
+                window.location.href = 'login.html';
+                return;
+            }
             console.error("Failed to load tests:", xhr.responseText);
         }
     });

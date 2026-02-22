@@ -1,27 +1,42 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const patientId = localStorage.getItem("entityId"); // ← استبدله بالـ ID الحقيقي
+    const patientId = localStorage.getItem("entityId");
 
-   $.ajax({
-  url: `https://localhost:7119/api/Patients/dashboard/${patientId}`,
-  method: "GET",
-  success: function (data) {
-    document.getElementById("totalTests").textContent = data.totalTests;
-    document.getElementById("totalPrescriptions").textContent = data.totalPrescriptions;
-    document.getElementById("upcomingAppointments").textContent = data.upcomingAppointments;
-    document.getElementById("lastTestDate").textContent = data.lastTestDate ?? "—";
+    function loadPatientDashboard(retried = false) {
+        $.ajax({
+            url: `https://localhost:7119/api/Patients/dashboard/${patientId}`,
+            method: "GET",
+            xhrFields: { withCredentials: true },
+            success: function (data) {
+                document.getElementById("totalTests").textContent = data.totalTests;
+                document.getElementById("totalPrescriptions").textContent = data.totalPrescriptions;
+                document.getElementById("upcomingAppointments").textContent = data.upcomingAppointments;
+                document.getElementById("lastTestDate").textContent = data.lastTestDate ?? "—";
 
-    const statusElement = document.getElementById("lastTestStatus");
-    const status = data.lastTestStatus ?? "—";
-    statusElement.textContent = status;
+                const statusElement = document.getElementById("lastTestStatus");
+                const status = data.lastTestStatus ?? "—";
+                statusElement.textContent = status;
 
-    // تغيير لون البادج حسب الحالة
-    statusElement.className = "badge " + getStatusBadgeColor(status);
-  },
-  error: function (err) {
-    console.log(err);
-    showErrorMessage("Failed to load dashboard.");
-  }
-});
+                // تغيير لون البادج حسب الحالة
+                statusElement.className = "badge " + getStatusBadgeColor(status);
+            },
+            error: function (err) {
+                if (err.status === 401) {
+                    if (!retried && typeof AuthClient !== 'undefined' && AuthClient.refresh) {
+                        AuthClient.refresh()
+                            .then(function () { loadPatientDashboard(true); })
+                            .catch(function () { window.location.href = 'login.html'; });
+                        return;
+                    }
+                    window.location.href = 'login.html';
+                    return;
+                }
+                console.log(err);
+                showErrorMessage("Failed to load dashboard.");
+            }
+        });
+    }
+
+    loadPatientDashboard();
 
 });
 

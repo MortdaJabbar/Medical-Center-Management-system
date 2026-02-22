@@ -92,13 +92,20 @@
 
         codeSubmitted = true; // stop timer-based redirection
 
-        fetch(`https://localhost:7119/api/auth/confirm-2fa?userId=${userId}&code=${code}`, {
-            method: "POST"
+        fetch(`${AuthClient.apiBase}/api/Auth/confirm-2fa?userId=${userId}&code=${code}`, {
+            method: "POST",
+            credentials: 'include'
         })
-        .then(res => res.json())
+        .then(async res => {
+            if (!res.ok) {
+                const txt = await res.text();
+                throw new Error(txt || 'Verification failed');
+            }
+            return res.json();
+        })
         .then(data => {
-            if (data.token) {
-                localStorage.setItem('token', data.token);
+            // Server sets HttpOnly cookies; server also returns user claims in body.
+            if (data && data.roleId) {
                 localStorage.setItem('roleId', data.roleId);
                 localStorage.setItem('userId', data.userId);
                 localStorage.setItem('entityId', data.entityId);
@@ -153,7 +160,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Something went wrong. Please try again.'
+                text: err.message || 'Something went wrong. Please try again.'
             }).then(() => {
                 window.location.href = "login.html";
             });

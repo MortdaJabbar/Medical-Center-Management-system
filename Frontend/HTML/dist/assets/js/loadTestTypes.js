@@ -1,8 +1,9 @@
 $(document).ready(function () {
     $('#addTestModal').on('show.bs.modal', function () {
-        $.ajax({
+            $.ajax({
             url: 'https://localhost:7119/api/TestTypes/all', // نفس API مالتك
             method: 'GET',
+            xhrFields: { withCredentials: true },
             success: function (data) {
                 const select = $('#addTestTypeId');
                 select.empty().append('<option disabled selected>Select Test Type</option>');
@@ -11,7 +12,8 @@ $(document).ready(function () {
                     select.append(`<option value="${test.testTypeId}" data-cost="${test.cost}">${test.name}</option>`);
                 });
             },
-            error: function () {
+            error: function (xhr) {
+                if (xhr && xhr.status === 401) return window.location.href = 'login.html';
                 alert('Failed to load test types dropdown.');
             }
         });

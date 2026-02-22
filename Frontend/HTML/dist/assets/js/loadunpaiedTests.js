@@ -2,6 +2,7 @@ function loadUnpaidTests() {
     $.ajax({
         url: 'https://localhost:7119/api/Invoices/unpaid-tests',
         method: 'GET',
+        xhrFields: { withCredentials: true },
         success: function (data) {
             const tbody = $('#unpaid-tests-body');
             tbody.empty();
@@ -32,7 +33,8 @@ function loadUnpaidTests() {
  PagationDataTable("#UnpaidTests",[4],10);
 
         },
-        error: function () {
+        error: function (xhr) {
+            if (xhr && xhr.status === 401) return window.location.href = 'login.html';
             alert('❌ Failed to load unpaid tests.');
         }
     });

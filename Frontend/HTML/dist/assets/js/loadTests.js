@@ -11,6 +11,7 @@ $(document).ready(function () {
         $.ajax({
             url: 'https://localhost:7119/api/Tests/detailed', // ← عدّل حسب مسارك الفعلي
             method: 'GET',
+            xhrFields: { withCredentials: true },
             success: function (data) {
                 const tableBody = $('#test-body');
                 tableBody.empty();
@@ -55,7 +56,8 @@ $(document).ready(function () {
                     tableBody.append(row);
                 });
             },
-            error: function () {
+            error: function (xhr) {
+                if (xhr && xhr.status === 401) return window.location.href = 'login.html';
                 alert('Failed to load test data.');
             }
         });

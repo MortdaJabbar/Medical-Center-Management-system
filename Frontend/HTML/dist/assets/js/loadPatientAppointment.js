@@ -1,18 +1,28 @@
-function loadAppointmentsForPatient(patientId) {
-    
+function loadAppointmentsForPatient(patientId, retried = false) {
     const url = `https://localhost:7119/api/Patients/appointments/${patientId}`;
 
     $.ajax({
-  url: url, // نفس المتغير url
-  method: "GET",
-  success: function(data) {
-    renderAppointments(data); // نفس الدالة الأصلية
-  },
-  error: function(xhr) {
-    console.error(xhr.responseText);
-    showErrorMessage("❌ Could not load appointments.");
-  }
-});
+        url: url,
+        method: "GET",
+        xhrFields: { withCredentials: true },
+        success: function (data) {
+            renderAppointments(data);
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                if (!retried && typeof AuthClient !== 'undefined' && AuthClient.refresh) {
+                    AuthClient.refresh()
+                        .then(function () { loadAppointmentsForPatient(patientId, true); })
+                        .catch(function () { window.location.href = 'login.html'; });
+                    return;
+                }
+                window.location.href = 'login.html';
+                return;
+            }
+            console.error(xhr.responseText);
+            showErrorMessage("❌ Could not load appointments.");
+        }
+    });
 
 }
 
