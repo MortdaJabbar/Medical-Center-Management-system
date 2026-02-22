@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\controllers\\invoicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\controllers\\invoicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\controllers\\pharmacistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\controllers\\pharmacistcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\controllers\\patientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\controllers\\patientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\controllers\\invoicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\controllers\\invoicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,12 +31,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "PharmacistController.cs",
+              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\PharmacistController.cs",
+              "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\PharmacistController.cs",
+              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\PharmacistController.cs",
+              "RelativeToolTip": "MCMSAPI\\Controllers\\PharmacistController.cs",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAAAEsAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T12:03:52.466Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "InvoicesController.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\InvoicesController.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\InvoicesController.cs",
               "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\InvoicesController.cs",
               "RelativeToolTip": "MCMSAPI\\Controllers\\InvoicesController.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAACQAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAACUAAAAAAAAAAAAAACQAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-22T12:02:50.481Z",
               "EditorCaption": ""
@@ -52,7 +69,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Program.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Program.cs",

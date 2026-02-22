@@ -11,6 +11,7 @@ namespace MCMSAPI.Controllers
 {
     [Route("api/Pharmacists")]
     [ApiController]
+    [Authorize]
     public class PharmacistController : ControllerBase
     {
         private readonly IMapper _mapper;

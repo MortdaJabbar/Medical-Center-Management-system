@@ -90,20 +90,52 @@
             var result = await Test.GetAllTestsAsync();
             return Ok(result);
         }
-        [Authorize(Roles = "Staff")]
+        [Authorize(Roles = "Doctor")]
         [HttpGet("doctor/{doctorId}")]
-        public async Task<IActionResult> GetTestsByDoctorId(Guid doctorId)
+        public async Task<IActionResult> GetTestsByDoctorId(
+    Guid doctorId,
+    [FromServices] IAuthorizationService authorizationService)
         {
+            if (doctorId == Guid.Empty)
+                return BadRequest("Invalid Doctor ID");
+
+            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+
+            if (doctor == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                doctor.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
+
             var tests = await Test.GetTestsByDoctorIdAsync(doctorId);
-            
 
             return Ok(tests);
-
         }
         [Authorize(Roles = "Patient")]
         [HttpGet("patient/{patientId}")]
-        public async Task<IActionResult> GetTestsByPatientId(Guid patientId)
+        public async Task<IActionResult> GetTestsByPatientId(Guid patientId,
+    [FromServices] IAuthorizationService authorizationService)
         {
+            if (patientId == Guid.Empty)
+                return BadRequest("Invalid Patient ID");
+
+            var patient = await Patient.FindPatientByIdAsync(patientId);
+
+            if (patient == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                patient.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
             var result = await Test.GetTestsByPatientIdAsync(patientId);
             return Ok(result);
             

@@ -12,6 +12,7 @@ namespace MCMSAPI.Controllers
     
     [Route("api/Prescriptions")]
     [ApiController]
+    [Authorize]
     public class PrescriptionsController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -87,8 +88,6 @@ namespace MCMSAPI.Controllers
             var prescriptions = await Prescription.GetAllPrescriptionsWithNamesAsync();
             return Ok(prescriptions);
         }
-
-
 
     }
 
