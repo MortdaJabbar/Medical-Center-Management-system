@@ -112,9 +112,22 @@ namespace MCMSAPI.Controllers
         }
         [Authorize(Roles ="Doctor")]
         [HttpGet("appointments/{doctorId}")]
-        public async Task<IActionResult> GetAppointmentsByDoctorId(Guid doctorId)
+        public async Task<IActionResult> GetAppointmentsByDoctorId(Guid doctorId, [FromServices] IAuthorizationService authorizationService)
         {
-            
+
+            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+
+            if (doctor == null)
+                return NotFound("Doctor not found.");
+
+            // 2️⃣ Ownership check using PersonId
+            var auth = await authorizationService.AuthorizeAsync(
+                User,
+                doctor.DTO.Person.PersonId,   // VERY IMPORTANT
+                "OwnerOnly");
+
+            if (!auth.Succeeded)
+                return Forbid();
             try
             {
                 var results = await Doctor.GetAppointmentsByDoctorIdAsync(doctorId);
@@ -131,9 +144,19 @@ namespace MCMSAPI.Controllers
         }
         [Authorize(Roles = "Doctor")]
         [HttpGet("tests/{doctorId}")]
-        public async Task<IActionResult> GetTestsByDoctorId(Guid doctorId)
+        public async Task<IActionResult> GetTestsByDoctorId(Guid doctorId ,[FromServices] IAuthorizationService authorizationService)
         {
-            
+            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            if (doctor == null)
+                return NotFound();
+
+            var auth = await authorizationService.AuthorizeAsync(
+                User,
+                doctor.DTO.Person.PersonId,
+                "OwnerOnly");
+
+            if (!auth.Succeeded)
+                return Forbid();
             var tests = await Test.GetTestsByDoctorIdAsync(doctorId);
 
 
@@ -142,9 +165,20 @@ namespace MCMSAPI.Controllers
         }
         [Authorize(Roles = "Doctor")]
         [HttpGet("Prescriptions/{doctorId}")]
-        public async Task<IActionResult> GetPrescriptionsByDoctorId(Guid doctorId)
+        public async Task<IActionResult> GetPrescriptionsByDoctorId(Guid doctorId,
+    [FromServices] IAuthorizationService authorizationService)
         {
-            
+            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            if (doctor == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                doctor.DTO.Person.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
             try
             {
                 var prescriptions = await Doctor.GetPrescriptionsByDoctorIdAsync(doctorId);
@@ -162,9 +196,21 @@ namespace MCMSAPI.Controllers
         }
         [Authorize(Roles = "Doctor")]
         [HttpGet("dashboard/{doctorId}")]
-        public async Task<IActionResult> GetDashboardStats(Guid doctorId)
+        public async Task<IActionResult> GetDashboardStats(Guid doctorId,
+    [FromServices] IAuthorizationService authorizationService)
         {
-            
+            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            if (doctor == null)
+                return NotFound();
+
+            var authResult = await authorizationService.AuthorizeAsync(
+                User,
+                doctor.DTO.Person.PersonId,
+                "OwnerOnly");
+
+            if (!authResult.Succeeded)
+                return Forbid();
+
             try
             {
                 var stats = await Doctor.GetDashboardStatsAsync(doctorId);

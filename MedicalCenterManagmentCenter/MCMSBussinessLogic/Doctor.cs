@@ -58,7 +58,7 @@ namespace MCMSBussinessLogic
             bool IsPharmacist = await PharmacistData.IsPharmacistExistsByNameAsync(FirstName, SecondName, ThirdName);
 
             if (IsDoctor || IsPharmacist) return false;
-
+             
             Person? person = await Person.FindPersonByNameAsync(FirstName, SecondName, ThirdName);
             if (person != null) 
             {
