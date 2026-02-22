@@ -9,7 +9,6 @@ namespace MCMSAPI.Controllers
 {
     [ApiController]
     [Route("api/Users")]
-    
     public class UsersController : ControllerBase
     {
         [Authorize(Roles = "Admin")]

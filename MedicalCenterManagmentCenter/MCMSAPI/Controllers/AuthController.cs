@@ -5,6 +5,7 @@ using MCMSBussinessLogic;
 using MCMSDAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace MCMSAPI.Controllers
@@ -69,6 +70,7 @@ namespace MCMSAPI.Controllers
         // ======================================================
         [AllowAnonymous]
         [HttpPost("login")]
+        [EnableRateLimiting("LoginPolicy")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             if (!ModelState.IsValid)
@@ -99,6 +101,7 @@ namespace MCMSAPI.Controllers
         // CONFIRM 2FA
         // ======================================================
         [AllowAnonymous]
+        [EnableRateLimiting("RegisterPolicy")]
         [HttpPost("confirm-2fa")]
         public async Task<IActionResult> Confirm2FA(Guid userId, string code)
         {
@@ -122,6 +125,7 @@ namespace MCMSAPI.Controllers
         // REFRESH (ROTATION BASED)
         // ======================================================
         [AllowAnonymous]
+        [EnableRateLimiting("RefreshPolicy")]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
         {
