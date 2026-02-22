@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\controllers\\testtypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\controllers\\testtypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|d:\\projects\\medical_center_managment_systeam\\medical-center-management-system\\medicalcentermanagmentcenter\\mcmsapi\\controllers\\testcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{72739FB4-ECFB-4327-9CCA-DCEFCC11E5FE}|MCMSAPI\\MCMSAPI.csproj|solutionrelative:mcmsapi\\controllers\\testcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -35,6 +39,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "TestTypeController.cs",
+              "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\TestTypeController.cs",
+              "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\TestTypeController.cs",
+              "ToolTip": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\TestTypeController.cs",
+              "RelativeToolTip": "MCMSAPI\\Controllers\\TestTypeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T12:26:30.532Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "TestController.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\TestController.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\TestController.cs",
@@ -47,7 +64,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "StaffController.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\StaffController.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\StaffController.cs",
@@ -60,7 +77,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "ServicePaymentsController.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\ServicePaymentsController.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\ServicePaymentsController.cs",
@@ -73,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "PrescriptionController.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Controllers\\PrescriptionController.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Controllers\\PrescriptionController.cs",
@@ -86,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Projects\\MEDICAL_CENTER_MANAGMENT_SYSTEAM\\Medical-Center-Management-system\\MedicalCenterManagmentCenter\\MCMSAPI\\Program.cs",
               "RelativeDocumentMoniker": "MCMSAPI\\Program.cs",

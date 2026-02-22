@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MCMSAPI.Controllers
 {
-    [Authorize(Roles ="Admin")] 
+    [Authorize(Roles ="Staff")] 
     [Route("api/TestTypes")]
     [ApiController]
  
@@ -19,7 +19,7 @@ namespace MCMSAPI.Controllers
         {
             _mapper = mapper;
         }
-        [Authorize(Roles = "Staff")]
+      
         [HttpPost("add")]
         public async Task<IActionResult> AddTestType([FromBody] AddUpdateTestTypeDto dto)
         {
@@ -38,7 +38,7 @@ namespace MCMSAPI.Controllers
 
             return success ? Ok(testType.TestTypeId) : BadRequest("Test type already exists or cost is invalid.");
         }
-        [Authorize(Roles = "Staff")]
+         
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateTestType(int id, [FromBody] AddUpdateTestTypeDto dto)
         {
@@ -60,14 +60,14 @@ namespace MCMSAPI.Controllers
 
             return success ? Ok("Test type updated.") : BadRequest("Failed to update test type.");
         }
-        [Authorize(Roles = "Staff")]
+      
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTestTypeById(int id)
         {
             var testType = await TestType.FindTestTypeByIdAsync(id);
             return testType != null ? Ok(testType.TDTO) : NotFound("Test type not found.");
         }
-        [Authorize(Roles = "Staff")]
+         
         [HttpGet("all")]
         public async Task<IActionResult> GetAllTestTypes()
         {
@@ -75,7 +75,7 @@ namespace MCMSAPI.Controllers
             var dtoList = list.ConvertAll(t => t.TDTO);
             return Ok(dtoList);
         }
-        [Authorize(Roles = "Staff")]
+        
         [HttpGet("all/paged")]
         public async Task<IActionResult> GetAllTestTypes(int page = 1, int size = 10)
         {
@@ -83,14 +83,14 @@ namespace MCMSAPI.Controllers
             var dtoList = list.ConvertAll(t => t.TDTO);
             return Ok(dtoList);
         }
-        [Authorize(Roles = "Staff")]
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTestType(int id)
         {
             var deleted = await TestType.DeleteTestTypeByIdAsync(id);
             return deleted ? Ok("Test type deleted.") : NotFound("Test type not found.");
         }
-        [Authorize(Roles = "Staff")]
+       
         [HttpGet("exists/by-name/{name}")]
         public async Task<IActionResult> CheckExistsByName(string name)
         {
