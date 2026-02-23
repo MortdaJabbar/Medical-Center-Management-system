@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -22,9 +23,9 @@ namespace MCMSDAL
         public string? Notes { get; set; }
     }
 
-    public static class ServicePaymentData
+    public class ServicePaymentData : IServicePaymentData
     {
-        public static async Task<bool> InsertServicePaymentAsync(ServicePaymentDto payment, string? stripeSessionId, string? stripePaymentIntentId)
+        public async Task<bool> InsertServicePaymentAsync(ServicePaymentDto payment, string? stripeSessionId, string? stripePaymentIntentId)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("InsertServicePayment", conn)
@@ -46,7 +47,7 @@ namespace MCMSDAL
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<List<ServicePaymentDto>> GetPaymentsByPatientIdAsync(Guid patientId)
+        public async Task<List<ServicePaymentDto>> GetPaymentsByPatientIdAsync(Guid patientId)
         {
             var result = new List<ServicePaymentDto>();
             using var conn = new SqlConnection(AppConfig.ConnectionString);
@@ -78,7 +79,7 @@ namespace MCMSDAL
             return result;
         }
 
-        public static async Task<bool> UpdateServicePaymentAsync(int paymentId, string paymentStatus, string? notes)
+        public async Task<bool> UpdateServicePaymentAsync(int paymentId, string paymentStatus, string? notes)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("UpdateServicePayment", conn)
@@ -94,7 +95,7 @@ namespace MCMSDAL
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<bool> DeleteServicePaymentAsync(int paymentId)
+        public async Task<bool> DeleteServicePaymentAsync(int paymentId)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("DeleteServicePayment", conn)
@@ -108,7 +109,7 @@ namespace MCMSDAL
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<bool> UpdatePaymentStatusAsyncBySessionId(string stripeSessionId, string newStatus)
+        public async Task<bool> UpdatePaymentStatusAsyncBySessionId(string stripeSessionId, string newStatus)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("UPDATE ServicePayments SET PaymentStatus = @Status WHERE StripeSessionId = @SessionId", conn);

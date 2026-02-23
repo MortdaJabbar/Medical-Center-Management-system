@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -25,9 +26,9 @@ namespace MCMSDAL
         public int LowStockCount { get; set; }
     }
 
-    public class PharmacistData
+    public class PharmacistData : IPharmacistData
     {
-        public static async Task<Guid> CreatePharmacistAsync(PharmacistDTO pharmacist)
+        public async Task<Guid> CreatePharmacistAsync(PharmacistDTO pharmacist)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.InsertPharmacist", connection);
@@ -42,7 +43,7 @@ namespace MCMSDAL
             var pharmacistId = await command.ExecuteScalarAsync();
             return (Guid)pharmacistId;
         }
-        public static async Task<PharmacistDTO?> GetPharmacistByIdAsync(Guid pharmacistId)
+        public async Task<PharmacistDTO?> GetPharmacistByIdAsync(Guid pharmacistId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.GetPharmacistById", connection);
@@ -78,7 +79,7 @@ namespace MCMSDAL
 
             return null;
         }
-        public static async Task<bool> UpdatePharmacistAsync(PharmacistDTO pharmacist)
+        public async Task<bool> UpdatePharmacistAsync(PharmacistDTO pharmacist)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.UpdatePharmacist", connection);
@@ -93,7 +94,7 @@ namespace MCMSDAL
             var result =  (int) await command.ExecuteScalarAsync();
             return result > 0;
         }
-        public static async Task<bool> DeletePharmacistAsync(Guid pharmacistId)
+        public async Task<bool> DeletePharmacistAsync(Guid pharmacistId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.DeletePharmacist", connection);
@@ -104,7 +105,7 @@ namespace MCMSDAL
             var result = (int)await command.ExecuteScalarAsync();
             return result > 0;
         }
-        public static async Task<bool> IsPharmacistExistsByIdAsync(Guid pharmacistId)
+        public async Task<bool> IsPharmacistExistsByIdAsync(Guid pharmacistId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.IsPharmacistExistsById", connection);
@@ -115,7 +116,7 @@ namespace MCMSDAL
             var result = await command.ExecuteScalarAsync();
             return result != null && Convert.ToBoolean(result);
         }
-        public static async Task<bool> IsPharmacistExistsByNameAsync(string firstName, string secondName, string? thirdName = null)
+        public async Task<bool> IsPharmacistExistsByNameAsync(string firstName, string secondName, string? thirdName = null)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.IsPharmacistExistsByName", connection);
@@ -129,7 +130,7 @@ namespace MCMSDAL
             var result = await command.ExecuteScalarAsync();
             return result != null && Convert.ToBoolean(result);
         }
-        public static async Task<bool> IsPharmacistExistsByPersonIdAsync(Guid personId)
+        public async Task<bool> IsPharmacistExistsByPersonIdAsync(Guid personId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.IsPharmacistExistsByPersonId", connection);
@@ -140,7 +141,7 @@ namespace MCMSDAL
             var result = await command.ExecuteScalarAsync();
             return result != null && Convert.ToBoolean(result);
         }
-        public static async Task<List<PharmacistDTO>> GetAllPharmacistsAsync( )
+        public async Task<List<PharmacistDTO>> GetAllPharmacistsAsync( )
         {
             var pharmacists = new List<PharmacistDTO>();
 
@@ -182,7 +183,7 @@ namespace MCMSDAL
         }
 
         
-            public static async Task<PharmacyDashboardStatsDto> GetPharmacyDashboardStatsAsync()
+            public async Task<PharmacyDashboardStatsDto> GetPharmacyDashboardStatsAsync()
             {
                 var dto = new PharmacyDashboardStatsDto();
 

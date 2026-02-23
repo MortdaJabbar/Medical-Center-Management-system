@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -68,9 +69,9 @@ namespace MCMSDAL
         public string? Notes { get; set; }
     }
 
-    public static class InvoiceData
+    public class InvoiceData : IInvoiceData
     {
-        public static async Task<List<InvoiceDetailsDto>> GetAllAsync()
+        public async Task<List<InvoiceDetailsDto>> GetAllAsync()
         {
             var list = new List<InvoiceDetailsDto>();
             using var conn = new SqlConnection(AppConfig.ConnectionString);
@@ -100,7 +101,7 @@ namespace MCMSDAL
             return list;
         }
 
-        public static async Task<bool> InsertAsync(AddInvoiceDto dto)
+        public async Task<bool> InsertAsync(AddInvoiceDto dto)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("InsertInvoice", conn) { CommandType = CommandType.StoredProcedure };
@@ -119,7 +120,7 @@ namespace MCMSDAL
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<bool> UpdateAsync(int InvoiceID, UpdateInvoiceDto dto)
+        public async Task<bool> UpdateAsync(int InvoiceID, UpdateInvoiceDto dto)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("UpdateInvoice", conn) { CommandType = CommandType.StoredProcedure };
@@ -134,7 +135,7 @@ namespace MCMSDAL
             return rowsAffected  > 0;
         }
 
-        public static async Task<bool> DeleteAsync(int invoiceId)
+        public async Task<bool> DeleteAsync(int invoiceId)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("DeleteInvoice", conn) { CommandType = CommandType.StoredProcedure };
@@ -145,7 +146,7 @@ namespace MCMSDAL
             return rowsAffected > 0;
         }
 
-        public static async Task<List<PatientInvoiceDto>> GetInvoicesForPatientAsync(Guid patientId)
+        public async Task<List<PatientInvoiceDto>> GetInvoicesForPatientAsync(Guid patientId)
         {
             var list = new List<PatientInvoiceDto>();
 
@@ -179,11 +180,11 @@ namespace MCMSDAL
         }
 
 
-        public static async Task<List<UnpaidServiceDto>> GetUnpaidTestsAsync() => await GetUnpaid("GetUnpaidTests");
-        public static async Task<List<UnpaidServiceDto>> GetUnpaidAppointmentsAsync() => await GetUnpaid("GetUnpaidAppointments");
-        public static async Task<List<UnpaidServiceDto>> GetUnpaidPrescriptionsAsync() => await GetUnpaid("GetUnpaidPrescriptions");
+        public async Task<List<UnpaidServiceDto>> GetUnpaidTestsAsync() => await GetUnpaid("GetUnpaidTests");
+        public async Task<List<UnpaidServiceDto>> GetUnpaidAppointmentsAsync() => await GetUnpaid("GetUnpaidAppointments");
+        public async Task<List<UnpaidServiceDto>> GetUnpaidPrescriptionsAsync() => await GetUnpaid("GetUnpaidPrescriptions");
 
-        private static async Task<List<UnpaidServiceDto>> GetUnpaid(string spName)
+        private async Task<List<UnpaidServiceDto>> GetUnpaid(string spName)
         {
             var list = new List<UnpaidServiceDto>();
             using var conn = new SqlConnection(AppConfig.ConnectionString);

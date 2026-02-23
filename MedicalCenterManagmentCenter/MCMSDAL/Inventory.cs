@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -39,9 +40,9 @@ namespace MCMSDAL
 
 
 
-    public static class InventoryData
+    public class InventoryData : IInventoryData
     {
-        public static async Task<int> CreateInventoryAsync(InventoryDto dto)
+        public async Task<int> CreateInventoryAsync(InventoryDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("InsertInventory", connection)
@@ -61,7 +62,7 @@ namespace MCMSDAL
             return Convert.ToInt32(result);
         }
 
-        public static async Task<bool> UpdateInventoryAsync(InventoryDto dto)
+        public async Task<bool> UpdateInventoryAsync(InventoryDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("UpdateInventory", connection)
@@ -81,7 +82,7 @@ namespace MCMSDAL
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<InventoryDto?> GetInventoryByIdAsync(int inventoryId)
+        public async Task<InventoryDto?> GetInventoryByIdAsync(int inventoryId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("GetInventoryByID", connection)
@@ -110,7 +111,7 @@ namespace MCMSDAL
             return null;
         }
 
-        public static async Task<List<InventoryDto>> GetAllInventoryAsync()
+        public async Task<List<InventoryDto>> GetAllInventoryAsync()
         {
             var list = new List<InventoryDto>();
             using var connection = new SqlConnection(AppConfig.ConnectionString);
@@ -139,7 +140,7 @@ namespace MCMSDAL
             return list;
         }
 
-        public static async Task<bool> DeleteInventoryAsync(int inventoryId)
+        public async Task<bool> DeleteInventoryAsync(int inventoryId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("DeleteInventory", connection)
@@ -160,7 +161,7 @@ namespace MCMSDAL
             return false;
         }
 
-        public static async Task<List<InventoryDisplayDto>> GetAllInventoryDetailsAsync()
+        public async Task<List<InventoryDisplayDto>> GetAllInventoryDetailsAsync()
         {
             var list = new List<InventoryDisplayDto>();
 

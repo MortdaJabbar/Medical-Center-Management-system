@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 namespace MCMSBussinessLogic
 {
    
-        public class Inventory
+    public class Inventory : IInventory
         {
+            private static readonly InventoryData _inventoryData = new();
+
             public InventoryDto DTO => new InventoryDto
             {
                 InventoryID = InventoryID,
@@ -48,7 +50,7 @@ namespace MCMSBussinessLogic
                 if (Quantity < 0)
                     throw new InvalidOperationException("Quantity must be non-negative.");
 
-                var newId = await InventoryData.CreateInventoryAsync(DTO);
+                var newId = await _inventoryData.CreateInventoryAsync(DTO);
                 InventoryID = newId;
                 return newId > 0;
             }
@@ -58,29 +60,29 @@ namespace MCMSBussinessLogic
                 if (Quantity < 0)
                     throw new InvalidOperationException("Quantity must be non-negative.");
 
-                return await InventoryData.UpdateInventoryAsync(DTO);
+                return await _inventoryData.UpdateInventoryAsync(DTO);
             }
 
             public static async Task<Inventory?> FindInventoryByIdAsync(int id)
             {
-                var dto = await InventoryData.GetInventoryByIdAsync(id);
+                var dto = await _inventoryData.GetInventoryByIdAsync(id);
                 return dto != null ? new Inventory(dto) : null;
             }
 
             public static async Task<List<Inventory>> GetAllInventoryAsync()
             {
-                var dtos = await InventoryData.GetAllInventoryAsync();
+                var dtos = await _inventoryData.GetAllInventoryAsync();
                 return dtos.Select(dto => new Inventory(dto)).ToList();
             }
 
             public static async Task<bool> DeleteInventoryByIdAsync(int id)
             {
-                return await InventoryData.DeleteInventoryAsync(id);
+                return await _inventoryData.DeleteInventoryAsync(id);
             }
 
         public  async static Task<List<InventoryDisplayDto>> GetInventoryDetailsAsync()
         { 
-             return await InventoryData.GetAllInventoryDetailsAsync();
+               return await _inventoryData.GetAllInventoryDetailsAsync();
         }
 
     }

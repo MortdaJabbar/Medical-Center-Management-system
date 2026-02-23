@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -27,9 +28,9 @@ namespace MCMSDAL
         public Guid NewTokenId { get; set; }
     }
 
-    public class RefreshTokenData
+    public class RefreshTokenData : IRefreshTokenData
     {
-        public static async Task<Guid?> CreateRefreshTokenAsync(RefreshTokenDto dto)
+        public async Task<Guid?> CreateRefreshTokenAsync(RefreshTokenDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("CreateRefreshToken", connection)
@@ -55,7 +56,7 @@ namespace MCMSDAL
             return tokenIdParam.Value != DBNull.Value ? (Guid?)tokenIdParam.Value : null;
         }
 
-        public static async Task<RefreshTokenDto?> FindByHashAsync(string tokenHash)
+        public async Task<RefreshTokenDto?> FindByHashAsync(string tokenHash)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("GetRefreshTokenByHash", conn)
@@ -86,7 +87,7 @@ namespace MCMSDAL
             };
         }
 
-        public static async Task<RefreshTokenRotateResult> RotateAsync(
+        public async Task<RefreshTokenRotateResult> RotateAsync(
             string oldTokenHash,
             string newTokenHash,
             DateTime newExpiresAtUtc,
@@ -133,7 +134,7 @@ namespace MCMSDAL
             };
         }
 
-        public static async Task<int> RevokeAsync(string tokenHash, string? requestIp)
+        public async Task<int> RevokeAsync(string tokenHash, string? requestIp)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("RevokeRefreshToken", conn)
@@ -156,7 +157,7 @@ namespace MCMSDAL
             return statusParam.Value == DBNull.Value ? -1 : (int)statusParam.Value;
         }
 
-        public static async Task<bool> RevokeAllForUserAsync(Guid userId, string? requestIp)
+        public async Task<bool> RevokeAllForUserAsync(Guid userId, string? requestIp)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("RevokeAllRefreshTokensForUser", conn)

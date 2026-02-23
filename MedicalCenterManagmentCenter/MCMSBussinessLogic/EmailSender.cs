@@ -12,13 +12,17 @@ namespace MCMSBussinessLogic
 {
     public static class EmailSender
     {
+        private static readonly EmailVerificationData _emailVerificationData = new();
+        private static readonly TwoFactorCodeData _twoFactorCodeData = new();
+        private static readonly PasswordResetData _passwordResetData = new();
+
         public static async Task SendVerificationEmailAsync(string toEmail,Guid UserId)
         {
             string token = Guid.NewGuid().ToString("N");
             DateTime expiry = DateTime.UtcNow.AddHours(1);
 
              
-            await EmailVerificationData.CreateVerificationAsync(UserId, token, expiry);
+            await _emailVerificationData.CreateVerificationAsync(UserId, token, expiry);
 
             string link = $"https://localhost:7119/api/Auth/verify-email?token={token}";
 
@@ -100,7 +104,7 @@ namespace MCMSBussinessLogic
             DateTime expiry = DateTime.UtcNow.AddMinutes(5);
             string from_email   = "mcms993st@gmail.com";
             string App_Password = "wqve lsuq msxr mhwt";
-            await TwoFactorCodeData.CreateCodeAsync(userId, code, expiry);
+            await _twoFactorCodeData.CreateCodeAsync(userId, code, expiry);
 
             string body = $"Your 2FA code is: <b>{code}</b>. It will expire in 5 minutes.";
 
@@ -130,7 +134,7 @@ namespace MCMSBussinessLogic
             { userId = userId, expiry = expirDate, token = Generatedtoken };
 
             // خزن التوكن بقاعدة البيانات
-            await PasswordResetData.CreateResetTokenAsync(restpasswordtoken);
+            await _passwordResetData.CreateResetTokenAsync(restpasswordtoken);
 
             string link = $"https://localhost:7119/pages/ResetPassword.html?token={restpasswordtoken.token}";
 

@@ -9,7 +9,7 @@ using Stripe.Checkout;
 
 namespace MCMSBussinessLogic
 {
-    public class StripeService
+    public class StripeService : IStripeService
     {
         public StripeService()
         {

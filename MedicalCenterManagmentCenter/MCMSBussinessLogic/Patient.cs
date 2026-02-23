@@ -4,8 +4,16 @@ using System.Data;
 
 namespace MCMSBussinessLogic
 {
-    public class Patient : Person
+    public class Patient : Person, IPatient
     {
+        private static readonly PersonData _personData = new();
+        private static readonly PatientData _patientData = new();
+        private static readonly PharmacistData _pharmacistData = new();
+        private static readonly AppointmentData _appointmentData = new();
+        private static readonly PrescriptionData _prescriptionData = new();
+        private static readonly TestData _testData = new();
+        private static readonly InvoiceData _invoiceData = new();
+
         public PatientDTO DTO
         {
             get
@@ -51,7 +59,7 @@ namespace MCMSBussinessLogic
 
             else
             {
-                Guid personId = await PersonData.AddPersonAsync(this.PDTO);
+                Guid personId = await _personData.AddPersonAsync(this.PDTO);
                 if (personId == Guid.Empty) return false;
                 this.PersonId = personId;
             }
@@ -67,28 +75,28 @@ namespace MCMSBussinessLogic
                 Height = this.Height
             };
 
-            this.PatientId = await PatientData.CreatePatientAsync(newPatientDto);
+            this.PatientId = await _patientData.CreatePatientAsync(newPatientDto);
             return this.PatientId != Guid.Empty;
         }
         public async Task<bool> UpdatePatientAsync()
         {
-            if (!await PersonData.IsPersonExistsByIdAsync(PersonId) || !await PatientData.IsPatientExistsByIdAsync(PatientId))
+            if (!await _personData.IsPersonExistsByIdAsync(PersonId) || !await _patientData.IsPatientExistsByIdAsync(PatientId))
                 return false;
 
-            bool personUpdated = await PersonData.UpdatePersonAsync(PDTO);
-            bool patientUpdated = await PatientData.UpdatePatientAsync(DTO);
+            bool personUpdated = await _personData.UpdatePersonAsync(PDTO);
+            bool patientUpdated = await _patientData.UpdatePatientAsync(DTO);
             return personUpdated && patientUpdated;
         }
         public static async Task<Patient?> FindPatientByIdAsync(Guid patientId)
         {
-            var dto = await PatientData.GetPatientByIdAsync(patientId);
+            var dto = await _patientData.GetPatientByIdAsync(patientId);
             return (dto != null) ? new Patient(dto) : null;
         }
         public static  async Task<bool> DeletePatientByIdAsync(Guid PatientId ,Guid PersonID)
         {
             bool isDoctor = await Doctor.IsDoctorExistsByPersonIdAsync(PersonID);
-            bool IsPharmacist = await PharmacistData.IsPharmacistExistsByPersonIdAsync(PersonID);
-            bool PatientDeleted = await PatientData.DeletePatientAsync(PatientId);
+            bool IsPharmacist = await _pharmacistData.IsPharmacistExistsByPersonIdAsync(PersonID);
+            bool PatientDeleted = await _patientData.DeletePatientAsync(PatientId);
 
             if (!isDoctor && !IsPharmacist && PatientDeleted)
             {
@@ -100,20 +108,20 @@ namespace MCMSBussinessLogic
         }
         public static async Task<bool> IsPatientExistsByNameAsync(string firstName, string secondName, string? thirdName = null) 
         {
-            return await PatientData.IsPatientExistsByNameAsync(firstName, secondName, thirdName);
+            return await _patientData.IsPatientExistsByNameAsync(firstName, secondName, thirdName);
         }
         public static async Task<bool> IsPatientExistsByIdAsync(Guid PatientId)
         {
-            return await PatientData.IsPatientExistsByIdAsync(PatientId);
+            return await _patientData.IsPatientExistsByIdAsync(PatientId);
         }
         public static async Task<bool> IsPatientExistsByPersonIdAsync(Guid personId)
         {
-            return await PatientData.IsPatientExistsByPersonIdAsync(personId);
+            return await _patientData.IsPatientExistsByPersonIdAsync(personId);
         }
         public static async Task<List<Patient>> GetAllPatientsAsync( )
         {
             // Fetch doctor data from the database
-            var doctorDTOs = await PatientData.GetAllPatientsAsync ();
+            var doctorDTOs = await _patientData.GetAllPatientsAsync ();
 
             // Map the DTOs to domain models
             var doctors = doctorDTOs.Select(dto => new Patient(dto)).ToList();
@@ -122,7 +130,7 @@ namespace MCMSBussinessLogic
         }
         public static async Task<List<PatientSummaryDto>> GetPatientSummariesAsync()
         {
-            var patientDTOs = await PatientData.GetAllPatientsAsync();
+            var patientDTOs = await _patientData.GetAllPatientsAsync();
 
             var summaries = patientDTOs.Select(dto => new PatientSummaryDto
             {
@@ -135,25 +143,25 @@ namespace MCMSBussinessLogic
         }
         public static async Task<List<AppointmentPatientDto>> GetPatientAppoitments(Guid id) 
         {
-            return await  AppointmentData.GetAppointmentsByPatientIdAsync(id);
+            return await  _appointmentData.GetAppointmentsByPatientIdAsync(id);
         }
         public static async Task<List<PrescriptionPatientDto>> GetPrescriptionsByPatientIdAsync(Guid patientId)
         {
-            return await  PrescriptionData.GetPrescriptionsByPatientIdAsync(patientId);
+            return await  _prescriptionData.GetPrescriptionsByPatientIdAsync(patientId);
         }
         public static async Task<List<TestPatientsDto>> GetTestsByPatientIdAsync(Guid patientId) 
         {
-            return await TestData.GetTestsByPatientIdAsync(patientId);
+            return await _testData.GetTestsByPatientIdAsync(patientId);
         
         }
         public static async Task<PatientDashboardDto?> GetPatientDashboardStatsAsync(Guid patientId)
         {
-            return await PatientData.GetPatientDashboardStatsAsync(patientId);
+            return await _patientData.GetPatientDashboardStatsAsync(patientId);
         }
 
         public static  async Task<List<PatientInvoiceDto>> GetInvoicesForPatientAsync(Guid patientId)
         {
-            return await InvoiceData.GetInvoicesForPatientAsync(patientId);
+            return await _invoiceData.GetInvoicesForPatientAsync(patientId);
         }
     }
 

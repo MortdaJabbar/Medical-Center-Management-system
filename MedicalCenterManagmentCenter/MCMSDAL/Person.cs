@@ -1,6 +1,7 @@
 ﻿
 using System.Data;
 using Microsoft.Data.SqlClient;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -39,9 +40,9 @@ namespace MCMSDAL
         public string? ImageLocation { get; set; }
     }
 
-    public class PersonData
+    public class PersonData : IPersonData
     {
-        public static async Task<List<PersonDTO>> GetAllPeopleAsync(int PageNumber = 1 , int PageSize = 10 )
+        public async Task<List<PersonDTO>> GetAllPeopleAsync(int PageNumber = 1 , int PageSize = 10 )
         {
             var personList = new List<PersonDTO>();
 
@@ -74,7 +75,7 @@ namespace MCMSDAL
 
             return personList;
         }
-        public static async Task<PersonDTO?> GetPersonByIdAsync(Guid personId)
+        public async Task<PersonDTO?> GetPersonByIdAsync(Guid personId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             using (var command = new SqlCommand("dbo.GetPersonById", connection))
@@ -104,7 +105,7 @@ namespace MCMSDAL
 
             return null;
         }
-        public static async Task<Guid> AddPersonAsync(PersonDTO PDTO)
+        public async Task<Guid> AddPersonAsync(PersonDTO PDTO)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             using (var command = new SqlCommand("dbo.InsertPerson", connection))
@@ -128,7 +129,7 @@ namespace MCMSDAL
                 return (Guid)PersonId;
             }
         }
-        public static async Task<bool> UpdatePersonAsync(PersonDTO PDTO)
+        public async Task<bool> UpdatePersonAsync(PersonDTO PDTO)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             using (var command = new SqlCommand("dbo.UpdatePerson", connection))
@@ -150,7 +151,7 @@ namespace MCMSDAL
                 return (rowsAffected > 0);
             }
         }
-        public static async Task<bool> DeletePersonAsync(Guid personId)
+        public async Task<bool> DeletePersonAsync(Guid personId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             using (var command = new SqlCommand("dbo.DeletePerson", connection))
@@ -163,7 +164,7 @@ namespace MCMSDAL
                 return rowsAffected > 0;
             }
         }
-        public static async Task<bool> IsPersonExistsByIdAsync(Guid personId)
+        public async Task<bool> IsPersonExistsByIdAsync(Guid personId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             using (var command = new SqlCommand("dbo.IsPersonExistsById", connection))
@@ -176,7 +177,7 @@ namespace MCMSDAL
                 return result != null && Convert.ToBoolean(result);
             }
         }
-        public static async Task<bool> IsPersonExistsByNameAsync(string firstName, string secondName, string? thirdName=null)
+        public async Task<bool> IsPersonExistsByNameAsync(string firstName, string secondName, string? thirdName=null)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             using (var command = new SqlCommand("dbo.IsPersonExistsByName", connection))
@@ -191,7 +192,7 @@ namespace MCMSDAL
                 return result != null && Convert.ToBoolean(result);
             }
         }
-        public static async Task<PersonDTO?> GetPersonByNameAsync(string firstName, string secondName, string? thirdName = null)
+        public async Task<PersonDTO?> GetPersonByNameAsync(string firstName, string secondName, string? thirdName = null)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.GetPersonByName", connection);
@@ -220,7 +221,7 @@ namespace MCMSDAL
 
             return null;
         }
-        public static async Task<PersonProfileDto?> GetProfileByIdAsync(Guid personId)
+        public async Task<PersonProfileDto?> GetProfileByIdAsync(Guid personId)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("GetProfileByEntityId", conn)

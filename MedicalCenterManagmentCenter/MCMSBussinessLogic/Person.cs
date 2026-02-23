@@ -2,8 +2,10 @@
 
 namespace MCMSBussinessLogic
 {
-    public class Person
+    public class Person : IPerson
     {
+        private static readonly PersonData _personData = new();
+
         public PersonDTO PDTO
         {
             get { return new PersonDTO(PersonId, FirstName, SecondName, ThirdName, DateOfBirth, Gender, Phone, Email, ImageLocation); }
@@ -56,36 +58,36 @@ namespace MCMSBussinessLogic
                 return false;
             }
 
-            Guid result = await PersonData.AddPersonAsync(PDTO);
+            Guid result = await _personData.AddPersonAsync(PDTO);
             this.PersonId = result;
             return result != Guid.Empty;
         }
         public static async Task<Person?> FindPersonByIdAsync(Guid personId)
         {
-            var personDTO = await PersonData.GetPersonByIdAsync(personId);
+            var personDTO = await _personData.GetPersonByIdAsync(personId);
             return (personDTO != null) ? new Person(personDTO) : null;
         }
         public async Task<bool> UpdatePersonAsync()
         {
-            if (!await PersonData.IsPersonExistsByIdAsync(this.PersonId)) return false;
+            if (!await _personData.IsPersonExistsByIdAsync(this.PersonId)) return false;
 
-            return await PersonData.UpdatePersonAsync(PDTO);
+            return await _personData.UpdatePersonAsync(PDTO);
         }
         public static async Task<bool> DeletePersonByIdAsync(Guid PersonID)
         {
-            return await PersonData.DeletePersonAsync(PersonID);
+            return await _personData.DeletePersonAsync(PersonID);
         }
         public static async Task<bool> IsPersonExistsByIdAsync(Guid personId)
         {
-            return await PersonData.IsPersonExistsByIdAsync(personId);
+            return await _personData.IsPersonExistsByIdAsync(personId);
         }
         public static async Task<bool> IsPersonExistsByNameAsync(string FirstName, string SecondName, string? ThirdName=null)
         {
-            return await PersonData.IsPersonExistsByNameAsync(FirstName, SecondName, ThirdName);
+            return await _personData.IsPersonExistsByNameAsync(FirstName, SecondName, ThirdName);
         }
         public static async Task<Person?> FindPersonByNameAsync(string FirstName, string SecondName, string? ThirdName = null)
         {
-            PersonDTO? persondto = await PersonData.GetPersonByNameAsync(FirstName, SecondName, ThirdName);
+            PersonDTO? persondto = await _personData.GetPersonByNameAsync(FirstName, SecondName, ThirdName);
             
             
             return persondto!=null ? new Person(persondto) : null ;
@@ -93,7 +95,7 @@ namespace MCMSBussinessLogic
         public static async Task<List<Person>> GetAllPeopleAsync(int PageNumber=1 , int PageSize = 10)
         {
             // Fetch people data from the database
-            var personDTOs = await PersonData.GetAllPeopleAsync(PageNumber,PageSize);
+            var personDTOs = await _personData.GetAllPeopleAsync(PageNumber,PageSize);
 
             // Map the DTOs to domain models
             var people = personDTOs.Select(dto => new Person(dto)).ToList();
@@ -103,7 +105,7 @@ namespace MCMSBussinessLogic
 
         public static async Task<PersonProfileDto?> GetProfileAsync(Guid personId)
         {
-            return await PersonData.GetProfileByIdAsync(personId);
+            return await _personData.GetProfileByIdAsync(personId);
         }
 
 

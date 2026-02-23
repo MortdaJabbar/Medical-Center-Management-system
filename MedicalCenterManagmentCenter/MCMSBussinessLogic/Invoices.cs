@@ -7,42 +7,90 @@ using System.Threading.Tasks;
 
 namespace MCMSBussinessLogic
 {
-    public class Invoice
+    public class Invoice : IInvoice
     {
+            public async Task<List<InvoiceDetailsDto>> GetAllInvoicesAsync()
+            {
+                return await GetAllAsync();
+            }
+
+            public async Task<bool> InsertInvoiceAsync(AddInvoiceDto dto)
+            {
+                return await InsertAsync(dto);
+            }
+
+            public async Task<bool> UpdateInvoiceAsync(int invoiceId, UpdateInvoiceDto dto)
+            {
+                return await UpdateAsync(invoiceId, dto);
+            }
+
+            public async Task<bool> DeleteInvoiceAsync(int invoiceId)
+            {
+                return await DeleteAsync(invoiceId);
+            }
+
+            public async Task<List<PatientInvoiceDto>> GetInvoicesByPatientIdAsync(Guid patientId)
+            {
+                return await GetByPatientIdAsync(patientId);
+            }
+
+            Task<List<UnpaidServiceDto>> IInvoice.GetUnpaidTestsAsync() => Invoice.GetUnpaidTestsAsync();
+            Task<List<UnpaidServiceDto>> IInvoice.GetUnpaidAppointmentsAsync() => Invoice.GetUnpaidAppointmentsAsync();
+            Task<List<UnpaidServiceDto>> IInvoice.GetUnpaidPrescriptionsAsync() => Invoice.GetUnpaidPrescriptionsAsync();
+
        
             // جلب جميع الفواتير بالتفاصيل (مع اسم المريض + وصف الخدمة)
             public async static Task<List<InvoiceDetailsDto>> GetAllAsync()
             {
-                return await InvoiceData.GetAllAsync();
+                var invoiceData = new InvoiceData();
+                return await invoiceData.GetAllAsync();
             }
 
             // إضافة فاتورة جديدة
             public async static Task<bool> InsertAsync(AddInvoiceDto dto)
             {
-                return await InvoiceData.InsertAsync(dto);
+                var invoiceData = new InvoiceData();
+                return await invoiceData.InsertAsync(dto);
             }
 
             // تعديل فاتورة (TotalAmount + PaymentStatus + Notes)
             public async static Task<bool> UpdateAsync(int invoiceId, UpdateInvoiceDto dto)
             {
-                return await InvoiceData.UpdateAsync(invoiceId, dto);
+                var invoiceData = new InvoiceData();
+                return await invoiceData.UpdateAsync(invoiceId, dto);
             }
 
             // حذف فاتورة
             public async static Task<bool> DeleteAsync(int invoiceId)
             {
-                return await InvoiceData.DeleteAsync(invoiceId);
+                var invoiceData = new InvoiceData();
+                return await invoiceData.DeleteAsync(invoiceId);
             }
 
             // جلب فواتير مريض معيّن (بدون اسم أو صورة)
             public static async Task<List<PatientInvoiceDto>> GetByPatientIdAsync(Guid patientId)
             {
-                return await InvoiceData.GetInvoicesForPatientAsync(patientId);
+                var invoiceData = new InvoiceData();
+                return await invoiceData.GetInvoicesForPatientAsync(patientId);
             }
 
-        public  async static Task<List<UnpaidServiceDto>> GetUnpaidTestsAsync() => await InvoiceData.GetUnpaidTestsAsync();
-        public async static Task<List<UnpaidServiceDto>> GetUnpaidAppointmentsAsync() => await InvoiceData.GetUnpaidAppointmentsAsync();
-        public  async static Task<List<UnpaidServiceDto>> GetUnpaidPrescriptionsAsync() => await InvoiceData.GetUnpaidPrescriptionsAsync();
+        public  async static Task<List<UnpaidServiceDto>> GetUnpaidTestsAsync()
+        {
+            var invoiceData = new InvoiceData();
+            return await invoiceData.GetUnpaidTestsAsync();
+        }
+
+        public async static Task<List<UnpaidServiceDto>> GetUnpaidAppointmentsAsync()
+        {
+            var invoiceData = new InvoiceData();
+            return await invoiceData.GetUnpaidAppointmentsAsync();
+        }
+
+        public  async static Task<List<UnpaidServiceDto>> GetUnpaidPrescriptionsAsync()
+        {
+            var invoiceData = new InvoiceData();
+            return await invoiceData.GetUnpaidPrescriptionsAsync();
+        }
 
 
 

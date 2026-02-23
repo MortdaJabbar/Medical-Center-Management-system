@@ -7,8 +7,10 @@ using System.Text.Json.Serialization;
 
 namespace MCMSBussinessLogic
 {
-    public class UserAccount
+    public class UserAccount : IUserAccount
     {
+        private static readonly UserAccountData _userAccountData = new();
+
         [JsonIgnore]
       
         public UserAccountDto DTO => new UserAccountDto
@@ -64,7 +66,7 @@ namespace MCMSBussinessLogic
 
         public async Task<bool> RegisterAsync()
         {
-            var userId = await UserAccountData.CreateUserAccountAsync(this.DTO);
+            var userId = await _userAccountData.CreateUserAccountAsync(this.DTO);
 
             if (userId == null)
                 return false;
@@ -75,27 +77,27 @@ namespace MCMSBussinessLogic
 
         public async Task<bool> ActivateUserAsync() 
         {
-            return await UserAccountData.ActivateUserAsync(this.UserId);
+            return await _userAccountData.ActivateUserAsync(this.UserId);
         
         }
 
         public static async Task<UserAccount?> FindByEmailAsync(string Email)
         {
-            UserAccountDto? dto = await UserAccountData.FindByEmailAsync(Email);
+            UserAccountDto? dto = await _userAccountData.FindByEmailAsync(Email);
 
             return (dto != null) ? new UserAccount(dto) : null;
 
         }
         public static async Task<UserAccount?> FindByIDAsync(Guid UserId)
         {
-            UserAccountDto? dto = await UserAccountData.FindByIdAsync(UserId);
+            UserAccountDto? dto = await _userAccountData.FindByIdAsync(UserId);
 
             return (dto != null) ? new UserAccount(dto) : null;
 
         }
         public static async Task<bool> DeleteAccountAsync(Guid UserId) 
         {
-            return await UserAccountData.DeleteAsync(UserId);
+            return await _userAccountData.DeleteAsync(UserId);
         }
         public async Task<bool> ChangePasswordAsync(string currentPassword, string newPassword)
         {
@@ -103,16 +105,16 @@ namespace MCMSBussinessLogic
                 return false;
 
             this.PasswordHash = PasswordHelper.HashPassword(newPassword);
-            return await UserAccountData.ChangePasswordAsync(this.UserId, this.PasswordHash);
+            return await _userAccountData.ChangePasswordAsync(this.UserId, this.PasswordHash);
         }
         public async Task<bool> UpdateAsync()
         {
-            return await UserAccountData.UpdateAsync(this.DTO);
+            return await _userAccountData.UpdateAsync(this.DTO);
         }
 
         public async static  Task<List<UserAccount>> GetAllAsync() 
         {
-          var dtos =   await UserAccountData.GetAllAsync();
+                    var dtos =   await _userAccountData.GetAllAsync();
             return dtos.Select(dto => new UserAccount(dto)).ToList();
 
         }
@@ -120,33 +122,33 @@ namespace MCMSBussinessLogic
         public static  async Task<List<UserAccountDetailsDto>> GetAllUserAccountsAsync()
         {
             // يمكنك إضافة أي منطق أعمال هنا مستقبلاً مثل التحقق أو التصنيف
-            return await UserAccountData.GetAllUserAccountsDetailedAsync();
+            return await _userAccountData.GetAllUserAccountsDetailedAsync();
         }
 
         public static async Task<List<PatientWithoutAccountDto>> GetPatientsWithoutAccountAsync()
         {
-            return await UserAccountData.GetPatientsWithoutAccountAsync();
+            return await _userAccountData.GetPatientsWithoutAccountAsync();
         }
 
         public static async Task<List<DoctorWithoutAccountDto>> GetDoctorsWithoutAccountAsync()
         {
-            return await UserAccountData.GetDoctorsWithoutAccountAsync();
+            return await _userAccountData.GetDoctorsWithoutAccountAsync();
         }
 
         public static async Task<List<PharmacistWithoutAccountDto>> GetPharmacistsWithoutAccountAsync()
         {
-            return await UserAccountData.GetPharmacistsWithoutAccountAsync();
+            return await _userAccountData.GetPharmacistsWithoutAccountAsync();
         }
 
         public static async Task<List<StaffWithoutAccountDto>> GetStaffWithoutAccountAsync()
         {
-            return await UserAccountData.GetStaffWithoutAccountAsync();
+            return await _userAccountData.GetStaffWithoutAccountAsync();
         }
 
        public async Task<bool> ResetPassword() 
         {
 
-            return await UserAccountData.ResetPassword(this.UserId, this.PasswordHash);
+            return await _userAccountData.ResetPassword(this.UserId, this.PasswordHash);
         
         }
 

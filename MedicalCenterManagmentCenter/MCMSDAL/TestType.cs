@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -17,12 +18,12 @@ namespace MCMSDAL
         public string? Description { get; set; }
         public decimal Cost { get; set; }
     }
-    public class TestTypeData
+    public class TestTypeData : ITestTypeData
     {
         
 
         // Method to create a TestType (InsertTestType stored procedure)
-        public async static Task<int> CreateTestType(TestTypeDto testType)
+        public async Task<int> CreateTestType(TestTypeDto testType)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -52,7 +53,7 @@ namespace MCMSDAL
         }
 
         // Method to get a TestType by ID (GetTestTypeById stored procedure)
-        public async static Task<TestTypeDto> GetTestTypeById(int testTypeId)
+        public async Task<TestTypeDto> GetTestTypeById(int testTypeId)
         {
             TestTypeDto? testType = null;
 
@@ -84,7 +85,7 @@ namespace MCMSDAL
         }
 
         // Method to update a TestType (UpdateTestType stored procedure)
-        public async static Task<bool> UpdateTestType(TestTypeDto testType)
+        public async Task<bool> UpdateTestType(TestTypeDto testType)
         {
             if (! await IsTestTypeExistsById(testType.TestTypeId)) { return false; }
 
@@ -109,7 +110,7 @@ namespace MCMSDAL
         }
 
      
-        public async static Task<bool> DeleteTestType(int testTypeId)
+        public async Task<bool> DeleteTestType(int testTypeId)
         {
             if (!await IsTestTypeExistsById(testTypeId)) { return false; }
 
@@ -128,7 +129,7 @@ namespace MCMSDAL
         }
 
         // Method to check if a TestType exists by ID (IsTestTypeExistsById stored procedure)
-        public async static Task<bool> IsTestTypeExistsById(int testTypeId)
+        public async Task<bool> IsTestTypeExistsById(int testTypeId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -143,7 +144,7 @@ namespace MCMSDAL
                 }
             }
         }
-        public async static Task<bool> IsTestTypeExistsByName(string  Name)
+        public async Task<bool> IsTestTypeExistsByName(string  Name)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -159,7 +160,7 @@ namespace MCMSDAL
             }
         }
         // Method to retrieve all TestTypes (GetAllTestTypes stored procedure)
-        public async static  Task<List<TestTypeDto>> GetAllTestTypes()
+        public async Task<List<TestTypeDto>> GetAllTestTypes()
         {
             var testTypes = new List<TestTypeDto>();
 

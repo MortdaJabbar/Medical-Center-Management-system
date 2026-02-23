@@ -5,14 +5,15 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
 
     
-    public static class EmailVerificationData
+    public class EmailVerificationData : IEmailVerificationData
     {
-        public static async Task<bool> CreateVerificationAsync(Guid userId, string token, DateTime expiry)
+        public async Task<bool> CreateVerificationAsync(Guid userId, string token, DateTime expiry)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("CreateEmailVerification", conn)
@@ -27,7 +28,7 @@ namespace MCMSDAL
             await conn.OpenAsync();
             return (await cmd.ExecuteNonQueryAsync())>0;
         }
-        public static async Task<(Guid UserId, bool IsUsed, DateTime ExpiryDate)?> FindByTokenAsync(string token)
+        public async Task<(Guid UserId, bool IsUsed, DateTime ExpiryDate)?> FindByTokenAsync(string token)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand(@"
@@ -50,7 +51,7 @@ namespace MCMSDAL
 
             return null;
         }
-        public static async Task MarkAsUsedAsync(string token)
+        public async Task MarkAsUsedAsync(string token)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand(@"

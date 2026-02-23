@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using MCMSDAL.Interfaces;
 
 
 namespace MCMSDAL
@@ -81,9 +82,9 @@ namespace MCMSDAL
         public decimal Cost { get; set; }
         public string? TestResult { get; set; }
     }
-    public class TestData
+    public class TestData : ITestData
     {
-        public static async Task<int> CreateTestAsync(TestDto test)
+        public async Task<int> CreateTestAsync(TestDto test)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -113,7 +114,7 @@ namespace MCMSDAL
                 }
             }
         }
-        public static async Task<TestDto?> GetTestByIdAsync(int testId)
+        public async Task<TestDto?> GetTestByIdAsync(int testId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -146,7 +147,7 @@ namespace MCMSDAL
             }
             return null;
         }
-        public static async Task<bool> UpdateTestAsync(TestDto test)
+        public async Task<bool> UpdateTestAsync(TestDto test)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -170,7 +171,7 @@ namespace MCMSDAL
                 }
             }
         }
-        public static async Task<bool> DeleteTestAsync(int testId)
+        public async Task<bool> DeleteTestAsync(int testId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -185,7 +186,7 @@ namespace MCMSDAL
                 }
             }
         }
-        public static async Task<bool> IsTestExistsByIdAsync(int testId)
+        public async Task<bool> IsTestExistsByIdAsync(int testId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             {
@@ -200,7 +201,7 @@ namespace MCMSDAL
                 }
             }
         }
-        public static async Task<List<TestDetailsDto>> GetAllTestsAsync()
+        public async Task<List<TestDetailsDto>> GetAllTestsAsync()
         {
             var tests = new List<TestDetailsDto>();
 
@@ -239,7 +240,7 @@ namespace MCMSDAL
             }
             return tests;
         }
-        public static async Task<List<TestDoctorDto>> GetTestsByDoctorIdAsync(Guid doctorId)
+        public async Task<List<TestDoctorDto>> GetTestsByDoctorIdAsync(Guid doctorId)
         {
             var result = new List<TestDoctorDto>();
 
@@ -273,7 +274,7 @@ namespace MCMSDAL
 
             return result;
         }
-        public static async Task<List<TestPatientsDto>> GetTestsByPatientIdAsync(Guid patientId)
+        public async Task<List<TestPatientsDto>> GetTestsByPatientIdAsync(Guid patientId)
         {
             var result = new List<TestPatientsDto>();
 
@@ -307,7 +308,7 @@ namespace MCMSDAL
 
             return result;
         }
-        public static async Task<List<PatientDoctorDto>> GetPatientDoctorPairsAsync()
+        public async Task<List<PatientDoctorDto>> GetPatientDoctorPairsAsync()
         {
             var list = new List<PatientDoctorDto>();
 

@@ -1,4 +1,5 @@
 ﻿using MCMSDAL;
+using MCMSDAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace MCMSBussinessLogic
 {
-    public class Appointment
+    public class Appointment : IAppointment
     {
+        private readonly IAppointmentData _appointmentData;
+
         public int AppointmentID { get; set; }
         public Guid PatientID { get; set; }
         public Guid DoctorID { get; set; }
@@ -34,9 +37,14 @@ namespace MCMSBussinessLogic
             Paid = Paid
         };
 
-        public Appointment() { }
+        public Appointment() : this(new AppointmentData()) { }
 
-        public Appointment(AppointmentDto dto)
+        public Appointment(IAppointmentData appointmentData)
+        {
+            _appointmentData = appointmentData;
+        }
+
+        public Appointment(AppointmentDto dto) : this(new AppointmentData())
         {
             AppointmentID = dto.AppointmentID;
             PatientID = dto.PatientID;
@@ -51,28 +59,31 @@ namespace MCMSBussinessLogic
 
         public async Task<bool> AddNewAppointmentAsync()
         {
-            return await AppointmentData.InsertAppointmentAsync(this.DTO);
+            return await _appointmentData.InsertAppointmentAsync(this.DTO);
         }
 
         public async Task<bool> UpdateAppointmentAsync()
         {
-            return await AppointmentData.UpdateAppointmentAsync(this.DTO);
+            return await _appointmentData.UpdateAppointmentAsync(this.DTO);
         }
 
         public static async Task<bool> DeleteAppointmentAsync(int id)
         {
-            return await AppointmentData.DeleteAppointmentAsync(id);
+            var appointmentData = new AppointmentData();
+            return await appointmentData.DeleteAppointmentAsync(id);
         }
 
         public static async Task<Appointment?> FindByIdAsync(int id)
         {
-            var dto = await AppointmentData.GetAppointmentByIdAsync(id);
+            var appointmentData = new AppointmentData();
+            var dto = await appointmentData.GetAppointmentByIdAsync(id);
             return dto != null ? new Appointment(dto) : null;
         }
 
         public static async Task<List<Appointment>> GetAllAsync()
         {
-            var dtos = await AppointmentData.GetAllAppointmentsAsync();
+            var appointmentData = new AppointmentData();
+            var dtos = await appointmentData.GetAllAppointmentsAsync();
             return dtos.Select(dto => new Appointment(dto)).ToList();
         }
 
@@ -80,13 +91,15 @@ namespace MCMSBussinessLogic
 
         public static async Task<List<AppointmentPatientDto>> GetByPatientIdAsync(Guid patientId)
         {
-            return await AppointmentData.GetAppointmentsByPatientIdAsync(patientId);
+            var appointmentData = new AppointmentData();
+            return await appointmentData.GetAppointmentsByPatientIdAsync(patientId);
         }
 
       
         public static async Task<List<AppointmentSummaryDto>> GetAppointmentsWithDetailsAsync()
         {
-            return await AppointmentData.GetAppointmentsWithDetailsAsync();
+            var appointmentData = new AppointmentData();
+            return await appointmentData.GetAppointmentsWithDetailsAsync();
         }
 
 

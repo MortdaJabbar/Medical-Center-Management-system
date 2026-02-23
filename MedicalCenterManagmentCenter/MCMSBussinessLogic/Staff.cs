@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace MCMSBussinessLogic
 {
-    public class Staff : Person
+    public class Staff : Person, IStaff
     {
+        private static readonly StaffData _staffData = new();
+        private static readonly PersonData _personData = new();
+
         public Guid StaffId { get; set; }
         public DateOnly HireDate { get; set; }
         public bool IsAdmin { get; set; }
@@ -40,26 +43,26 @@ namespace MCMSBussinessLogic
             }
             else
             {
-                var newPersonId = await PersonData.AddPersonAsync(PDTO);
+                var newPersonId = await _personData.AddPersonAsync(PDTO);
                 if (newPersonId == Guid.Empty) return false;
                 PersonId = newPersonId;
             }
 
             var dto = this.DTO;
-            StaffId = await StaffData.InsertStaffAsync(dto);
+            StaffId = await _staffData.InsertStaffAsync(dto);
             return StaffId != Guid.Empty;
         }
 
         public async Task<bool> UpdateStaffAsync()
         {
-            bool personUpdated = await PersonData.UpdatePersonAsync(this.PDTO);
-            bool staffUpdated = await StaffData.UpdateStaffAsync(this.StaffId, this.DTO);
+            bool personUpdated = await _personData.UpdatePersonAsync(this.PDTO);
+            bool staffUpdated = await _staffData.UpdateStaffAsync(this.StaffId, this.DTO);
             return personUpdated && staffUpdated;
         }
 
         public static async Task<Staff?> FindStaffByIdAsync(Guid id)
         {
-            var dto = await StaffData.GetStaffByIdAsync(id);
+            var dto = await _staffData.GetStaffByIdAsync(id);
             return dto != null ? new Staff(dto) : null;
         }
 
@@ -68,7 +71,7 @@ namespace MCMSBussinessLogic
            
             bool isPatient = await Patient.IsPatientExistsByPersonIdAsync(PersonID);
            
-            bool StaffDeleted = await StaffData.DeleteStaffAsync(staffId);
+            bool StaffDeleted = await _staffData.DeleteStaffAsync(staffId);
             if (  !isPatient    && StaffDeleted)
             {
                 await DeletePersonByIdAsync(PersonID);
@@ -79,24 +82,24 @@ namespace MCMSBussinessLogic
 
         public static async Task<List<Staff>> GetAllStaffAsync()
         {
-            var dtos = await StaffData.GetAllStaffAsync();
+            var dtos = await _staffData.GetAllStaffAsync();
             return dtos.Select(dto => new Staff(dto)).ToList();
         }
 
         public static async Task<List<StaffSummaryDto>> GetStaffSummariesAsync()
         {
-            return await StaffData.GetAllStaffSummariesAsync();
+            return await _staffData.GetAllStaffSummariesAsync();
         }
 
         public static async Task<StaffDashboardStatsDto> GetDashboardStatsAsync()
         {
-            return await StaffData.GetStaffDashboardStatsAsync();
+            return await _staffData.GetStaffDashboardStatsAsync();
         }
 
 
         public static async Task<AdminDashboardStatsDto> GetAdminDashboardStatsAsync()
         {
-            return await StaffData.GetAdminDashboardStatsAsync();
+            return await _staffData.GetAdminDashboardStatsAsync();
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using MCMSDAL.Interfaces;
 
 
 namespace MCMSDAL
@@ -28,9 +29,9 @@ namespace MCMSDAL
         public PersonDTO Person { get; set; }   
     }
 
-    public class PatientData
+    public class PatientData : IPatientData
     {
-        public static async Task<Guid> CreatePatientAsync(PatientDTO patient)
+        public async Task<Guid> CreatePatientAsync(PatientDTO patient)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.InsertPatient", connection);
@@ -48,7 +49,7 @@ namespace MCMSDAL
             return (Guid)PersonId;
         }
 
-        public static async Task<PatientDTO> GetPatientByIdAsync(Guid patientId)
+        public async Task<PatientDTO> GetPatientByIdAsync(Guid patientId)
         {
             PatientDTO? patient = null;
 
@@ -89,7 +90,7 @@ namespace MCMSDAL
             return patient;
         }
 
-        public static async Task<List<PatientDTO>> GetAllPatientsAsync( )
+        public async Task<List<PatientDTO>> GetAllPatientsAsync( )
         {
             var patients = new List<PatientDTO>();
 
@@ -131,7 +132,7 @@ namespace MCMSDAL
             return patients;
         }
 
-        public static async Task<bool> UpdatePatientAsync(PatientDTO patient)
+        public async Task<bool> UpdatePatientAsync(PatientDTO patient)
         {
             if (!await IsPatientExistsByIdAsync(patient.PatientId)) return false;
 
@@ -151,7 +152,7 @@ namespace MCMSDAL
             }
         }
 
-        public static async Task<bool> DeletePatientAsync(Guid patientId)
+        public async Task<bool> DeletePatientAsync(Guid patientId)
         {
             if (!await IsPatientExistsByIdAsync(patientId)) return false;
 
@@ -167,7 +168,7 @@ namespace MCMSDAL
             }
         }
 
-        public static async Task<bool> IsPatientExistsByIdAsync(Guid patientId)
+        public async Task<bool> IsPatientExistsByIdAsync(Guid patientId)
         {
             using (var connection = new SqlConnection(AppConfig.ConnectionString))
             using (var command = new SqlCommand("dbo.IsPatientExistsById", connection))
@@ -180,7 +181,7 @@ namespace MCMSDAL
                 return result != null && Convert.ToBoolean(result);
             }
         }
-        public static async Task<bool> IsPatientExistsByNameAsync(string firstName, string secondName, string? thirdName = null)
+        public async Task<bool> IsPatientExistsByNameAsync(string firstName, string secondName, string? thirdName = null)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.IsPatientExistsByName", connection);
@@ -194,7 +195,7 @@ namespace MCMSDAL
             var result = await command.ExecuteScalarAsync();
             return result != null && Convert.ToBoolean(result);
         }
-        public static async Task<bool> IsPatientExistsByPersonIdAsync(Guid personId)
+        public async Task<bool> IsPatientExistsByPersonIdAsync(Guid personId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.IsPatientExistsByPersonId", connection);
@@ -206,7 +207,7 @@ namespace MCMSDAL
             return result != null && Convert.ToBoolean(result);
         }
 
-        public static async Task<PatientDashboardDto?> GetPatientDashboardStatsAsync(Guid patientId)
+        public async Task<PatientDashboardDto?> GetPatientDashboardStatsAsync(Guid patientId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("GetPatientDashboardStats", connection)

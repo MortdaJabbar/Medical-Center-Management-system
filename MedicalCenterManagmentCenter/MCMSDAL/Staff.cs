@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MCMSDAL;
 using System.ComponentModel.DataAnnotations;
+using MCMSDAL.Interfaces;
 namespace MCMSDAL
 {
 
@@ -75,9 +76,9 @@ namespace MCMSDAL
 
     }
 
-    public static class StaffData
+    public class StaffData : IStaffData
     {
-        public static async Task<Guid> InsertStaffAsync(StaffDTO staff)
+        public async Task<Guid> InsertStaffAsync(StaffDTO staff)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.InsertStaff", connection);
@@ -91,7 +92,7 @@ namespace MCMSDAL
             return (Guid)(await command.ExecuteScalarAsync());
         }
 
-        public static async Task<bool> UpdateStaffAsync(Guid staffId, StaffDTO staff)
+        public async Task<bool> UpdateStaffAsync(Guid staffId, StaffDTO staff)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.UpdateStaff", connection);
@@ -105,7 +106,7 @@ namespace MCMSDAL
             return (int)(await command.ExecuteScalarAsync()) > 0;
         }
 
-        public static async Task<bool> DeleteStaffAsync(Guid staffId)
+        public async Task<bool> DeleteStaffAsync(Guid staffId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.DeleteStaff", connection);
@@ -116,7 +117,7 @@ namespace MCMSDAL
             return (int)(await command.ExecuteScalarAsync()) > 0;
         }
 
-        public static async Task<StaffDTO?> GetStaffByIdAsync(Guid staffId)
+        public async Task<StaffDTO?> GetStaffByIdAsync(Guid staffId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("dbo.GetStaffById", connection);
@@ -151,7 +152,7 @@ namespace MCMSDAL
             return null;
         }
 
-        public static async Task<List<StaffDTO>> GetAllStaffAsync()
+        public async Task<List<StaffDTO>> GetAllStaffAsync()
         {
             var list = new List<StaffDTO>();
             using var connection = new SqlConnection(AppConfig.ConnectionString);
@@ -186,7 +187,7 @@ namespace MCMSDAL
             return list;
         }
 
-        public static async Task<List<StaffSummaryDto>> GetAllStaffSummariesAsync()
+        public async Task<List<StaffSummaryDto>> GetAllStaffSummariesAsync()
         {
             var list = new List<StaffSummaryDto>();
 
@@ -214,7 +215,7 @@ namespace MCMSDAL
             return list;
         }
 
-        public static async Task<StaffDashboardStatsDto> GetStaffDashboardStatsAsync()
+        public async Task<StaffDashboardStatsDto> GetStaffDashboardStatsAsync()
         {
             var dto = new StaffDashboardStatsDto();
 
@@ -239,7 +240,7 @@ namespace MCMSDAL
             return dto;
         }
 
-        public static async Task<AdminDashboardStatsDto> GetAdminDashboardStatsAsync()
+        public async Task<AdminDashboardStatsDto> GetAdminDashboardStatsAsync()
         {
             var dto = new AdminDashboardStatsDto();
 

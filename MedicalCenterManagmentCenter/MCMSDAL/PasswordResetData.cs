@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -14,9 +15,9 @@ namespace MCMSDAL
         public string token { get; set; }
        public DateTime expiry { get; set; }
     }
-    public static class PasswordResetData
+    public class PasswordResetData : IPasswordResetData
     {
-        public static async Task CreateResetTokenAsync(RestPasswordTokenDto dto)
+        public async Task CreateResetTokenAsync(RestPasswordTokenDto dto)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("CreatePasswordResetToken", conn)
@@ -32,7 +33,7 @@ namespace MCMSDAL
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public static async Task<RestPasswordTokenDto?> GetByTokenAsync(string token)
+        public async Task<RestPasswordTokenDto?> GetByTokenAsync(string token)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("GetPasswordResetToken", conn)
@@ -59,7 +60,7 @@ namespace MCMSDAL
             return null;
         }
 
-        public static async Task DeleteTokenAsync(string token)
+        public async Task DeleteTokenAsync(string token)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("DeletePasswordResetToken", conn)

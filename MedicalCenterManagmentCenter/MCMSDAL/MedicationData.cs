@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -17,9 +18,9 @@ namespace MCMSDAL
         public string DosageForm { get; set; } = string.Empty;
     }
 
-    public static class MedicationData
+    public class MedicationData : IMedicationData
     {
-        public static async Task<bool> InsertMedicationAsync(MedicationDto medication)
+        public async Task<bool> InsertMedicationAsync(MedicationDto medication)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("InsertMedication", connection)
@@ -36,7 +37,7 @@ namespace MCMSDAL
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<bool> UpdateMedicationAsync(MedicationDto medication)
+        public async Task<bool> UpdateMedicationAsync(MedicationDto medication)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("UpdateMedication", connection)
@@ -54,7 +55,7 @@ namespace MCMSDAL
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<MedicationDto?> GetMedicationByIdAsync(int id)
+        public async Task<MedicationDto?> GetMedicationByIdAsync(int id)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("GetMedicationByID", connection)
@@ -80,7 +81,7 @@ namespace MCMSDAL
             return null;
         }
 
-        public static async Task<List<MedicationDto>> GetAllMedicationsAsync( )
+        public async Task<List<MedicationDto>> GetAllMedicationsAsync( )
         {
             var result = new List<MedicationDto>();
             using var connection = new SqlConnection(AppConfig.ConnectionString);
@@ -108,7 +109,7 @@ namespace MCMSDAL
             return result;
         }
 
-        public static async Task<bool> DeleteMedicationAsync(int id)
+        public async Task<bool> DeleteMedicationAsync(int id)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("DeleteMedication", connection)

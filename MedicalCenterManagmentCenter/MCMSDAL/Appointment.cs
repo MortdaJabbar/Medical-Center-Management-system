@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Azure.Core.HttpHeader;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -79,9 +80,9 @@ namespace MCMSDAL
 
 
 
-    public static class AppointmentData
+    public class AppointmentData : IAppointmentData
     {
-        public static async Task<bool> InsertAppointmentAsync(AppointmentDto dto)
+        public async Task<bool> InsertAppointmentAsync(AppointmentDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("InsertAppointment", connection)
@@ -105,7 +106,7 @@ namespace MCMSDAL
             return affected > 0;
         }
 
-        public static async Task<bool> UpdateAppointmentAsync(AppointmentDto dto)
+        public async Task<bool> UpdateAppointmentAsync(AppointmentDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("UpdateAppointment", connection)
@@ -127,7 +128,7 @@ namespace MCMSDAL
             return affected > 0;
         }
 
-        public static async Task<AppointmentDto?> GetAppointmentByIdAsync(int id)
+        public async Task<AppointmentDto?> GetAppointmentByIdAsync(int id)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("GetAppointmentById", connection)
@@ -159,7 +160,7 @@ namespace MCMSDAL
             return null;
         }
 
-        public static async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
+        public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
         {
             var result = new List<AppointmentDto>();
             using var connection = new SqlConnection(AppConfig.ConnectionString);
@@ -191,7 +192,7 @@ namespace MCMSDAL
             return result;
         }
 
-        public static async Task<bool> DeleteAppointmentAsync(int id)
+        public async Task<bool> DeleteAppointmentAsync(int id)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("DeleteAppointment", connection)
@@ -208,7 +209,7 @@ namespace MCMSDAL
             return affected > 0;
         }
 
-        public static async Task<List<AppointmentPatientDto>> GetAppointmentsByPatientIdAsync(Guid patientId)
+        public async Task<List<AppointmentPatientDto>> GetAppointmentsByPatientIdAsync(Guid patientId)
         {
             var result = new List<AppointmentPatientDto>();
 
@@ -243,7 +244,7 @@ namespace MCMSDAL
             return result;
         }
 
-        public static async Task<List<AppointmentByDoctorDto>> GetAppointmentsByDoctorIdAsync(Guid doctorId)
+        public async Task<List<AppointmentByDoctorDto>> GetAppointmentsByDoctorIdAsync(Guid doctorId)
         {
             var appointments = new List<AppointmentByDoctorDto>();
 
@@ -277,7 +278,7 @@ namespace MCMSDAL
         }
 
 
-        public static async Task<List<AppointmentSummaryDto>> GetAppointmentsWithDetailsAsync()
+        public async Task<List<AppointmentSummaryDto>> GetAppointmentsWithDetailsAsync()
         {
             var results = new List<AppointmentSummaryDto>();
 

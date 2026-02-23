@@ -1,8 +1,10 @@
 ﻿ using MCMSDAL;
 namespace MCMSBussinessLogic
 {
-        public class TestType
+    public class TestType : ITestType
         {
+            private static readonly TestTypeData _testTypeData = new();
+
             public TestTypeDto TDTO
             {
                 get
@@ -55,20 +57,20 @@ namespace MCMSBussinessLogic
                     throw new InvalidOperationException("Cost cannot be negative");
                 }
 
-                int result = await MCMSDAL.TestTypeData.CreateTestType(TDTO);
+                int result = await _testTypeData.CreateTestType(TDTO);
                 this.TestTypeId = result;
                 return result > 0;
             }
 
             public static async Task<TestType?> FindTestTypeByIdAsync(int testTypeId)
             {
-                var testTypeDto = await MCMSDAL.TestTypeData.GetTestTypeById(testTypeId);
+                var testTypeDto = await _testTypeData.GetTestTypeById(testTypeId);
                 return (testTypeDto != null) ? new TestType(testTypeDto) : null;
             }
 
             public async Task<bool> UpdateTestTypeAsync()
             {
-                if (!await MCMSDAL.TestTypeData.IsTestTypeExistsById(TestTypeId))
+                if (!await _testTypeData.IsTestTypeExistsById(TestTypeId))
                     return false;
 
                  
@@ -79,34 +81,34 @@ namespace MCMSBussinessLogic
                     throw new InvalidOperationException("Cost cannot be negative");
                 }
 
-                return await MCMSDAL.TestTypeData.UpdateTestType(TDTO);
+                return await _testTypeData.UpdateTestType(TDTO);
             }
 
             public static async Task<bool> DeleteTestTypeByIdAsync(int testTypeId)
             {
-                return await MCMSDAL.TestTypeData.DeleteTestType(testTypeId);
+                return await _testTypeData.DeleteTestType(testTypeId);
             }
 
             public static async Task<bool> IsTestTypeExistsByIdAsync(int testTypeId)
             {
-                return await MCMSDAL.TestTypeData.IsTestTypeExistsById(testTypeId);
+                return await _testTypeData.IsTestTypeExistsById(testTypeId);
             }
 
             public static async Task<bool> IsTestTypeExistsByNameAsync(string name)
             {
-            return await MCMSDAL.TestTypeData.IsTestTypeExistsByName(name);
+            return await _testTypeData.IsTestTypeExistsByName(name);
             }
 
             public static async Task<TestType?> FindTestTypeByNameAsync(string name)
             {
-                var allTestTypes = await MCMSDAL.TestTypeData.GetAllTestTypes();
+                var allTestTypes = await _testTypeData.GetAllTestTypes();
                 var testTypeDto = allTestTypes.FirstOrDefault(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                 return testTypeDto != null ? new TestType(testTypeDto) : null;
             }
 
         public static async Task<List<TestType>> GetAllTestTypesAsync()
         {
-            var testTypeDtos = await MCMSDAL.TestTypeData.GetAllTestTypes();
+            var testTypeDtos = await _testTypeData.GetAllTestTypes();
 
            
 
@@ -115,7 +117,7 @@ namespace MCMSBussinessLogic
 
         public static async Task<List<TestType>> GetAllTestTypesAsync(int pageNumber = 1, int pageSize = 10)
             {
-                var testTypeDtos = await MCMSDAL.TestTypeData.GetAllTestTypes();
+                var testTypeDtos = await _testTypeData.GetAllTestTypes();
 
                 // Implement pagination
                 var paginatedDtos = testTypeDtos
@@ -127,7 +129,7 @@ namespace MCMSBussinessLogic
             }
         public static async Task<List<TestTypeSummaryDto>> GetTestTypeSummariesAsync()
         {
-            var testTypes = await TestTypeData.GetAllTestTypes();
+            var testTypes = await _testTypeData.GetAllTestTypes();
 
             return testTypes.Select(t => new TestTypeSummaryDto
             {

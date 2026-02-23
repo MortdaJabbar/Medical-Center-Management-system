@@ -7,32 +7,33 @@ using System.Threading.Tasks;
 
 namespace MCMSBussinessLogic
 {
-    public class ServicePayment
+    public class ServicePayment : IServicePayment
     {
+        private static readonly ServicePaymentData _servicePaymentData = new();
 
         public async Task<bool> AddPaymentAsync(ServicePaymentDto payment, string? stripeSessionId, string? stripePaymentIntentId)
         {
-            return await ServicePaymentData.InsertServicePaymentAsync(payment, stripeSessionId, stripePaymentIntentId);
+            return await _servicePaymentData.InsertServicePaymentAsync(payment, stripeSessionId, stripePaymentIntentId);
         }
 
         public async Task<List<ServicePaymentDto>> GetPaymentsForPatientAsync(Guid patientId)
         {
-            return await ServicePaymentData.GetPaymentsByPatientIdAsync(patientId);
+            return await _servicePaymentData.GetPaymentsByPatientIdAsync(patientId);
         }
 
         public async Task<bool> UpdatePaymentStatusAsync(int paymentId, string newStatus, string? notes)
         {
-            return await ServicePaymentData.UpdateServicePaymentAsync(paymentId, newStatus, notes);
+            return await _servicePaymentData.UpdateServicePaymentAsync(paymentId, newStatus, notes);
         }
 
         public async Task<bool> DeletePaymentAsync(int paymentId)
         {
-            return await ServicePaymentData.DeleteServicePaymentAsync(paymentId);
+            return await _servicePaymentData.DeleteServicePaymentAsync(paymentId);
         }
 
         public async Task<bool> MarkPaymentCompletedFromStripeAsync(string stripeSessionId)
         {
-            return await ServicePaymentData.UpdatePaymentStatusAsyncBySessionId(stripeSessionId, "Completed");
+            return await _servicePaymentData.UpdatePaymentStatusAsyncBySessionId(stripeSessionId, "Completed");
         }
 
 

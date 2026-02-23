@@ -2,8 +2,10 @@
 
 namespace MCMSBussinessLogic
 {
-    public class Test
+    public class Test : ITest
     {
+        private static readonly TestData _testData = new();
+
         public TestDto TDTO
         {
             get => new TestDto
@@ -68,33 +70,33 @@ namespace MCMSBussinessLogic
         
             CreatedAt = DateOnly.FromDateTime(DateTime.Now);
 
-            int result = await TestData.CreateTestAsync(TDTO);
+            int result = await _testData.CreateTestAsync(TDTO);
             this.TestID = result;
             return result > 0;
         }
         public static async Task<Test?> FindTestByIdAsync(int testId)
         {
-            var testDto = await TestData.GetTestByIdAsync(testId);
+            var testDto = await _testData.GetTestByIdAsync(testId);
             return testDto != null ? new Test(testDto) : null;
         }
         public async Task<bool> UpdateTestAsync()
         {
-            if (!await TestData.IsTestExistsByIdAsync(TestID))
+            if (!await _testData.IsTestExistsByIdAsync(TestID))
                 return false;
 
-            return await TestData.UpdateTestAsync(TDTO);
+            return await _testData.UpdateTestAsync(TDTO);
         }
         public static async Task<bool> DeleteTestAsync(int testId)
         {
-            return await TestData.DeleteTestAsync(testId);
+            return await _testData.DeleteTestAsync(testId);
         }
         public static async Task<bool> IsTestExistsByIdAsync(int testId)
         {
-            return await TestData.IsTestExistsByIdAsync(testId);
+            return await _testData.IsTestExistsByIdAsync(testId);
         }
         public static async Task<List<TestDetailsDto>> GetAllTestsAsync(int pageNumber = 1, int pageSize = 10)
         {
-            var testDtos = await TestData.GetAllTestsAsync();
+            var testDtos = await _testData.GetAllTestsAsync();
 
             var paginatedTests = testDtos
                 .Skip((pageNumber - 1) * pageSize)
@@ -104,21 +106,21 @@ namespace MCMSBussinessLogic
         }
         public static async Task<List<TestDetailsDto>> GetAllTestsAsync()
         {
-            var testDtos = await TestData.GetAllTestsAsync();
+            var testDtos = await _testData.GetAllTestsAsync();
 
             
             return testDtos;
         }
         public static async Task<List<TestPatientsDto>> GetTestsByPatientIdAsync(Guid patientId)
         {
-            var allTests = await TestData.GetTestsByPatientIdAsync(patientId);
+            var allTests = await _testData.GetTestsByPatientIdAsync(patientId);
             
 
             return allTests;
         }
         public static async Task<List<TestDoctorDto>> GetTestsByDoctorIdAsync(Guid DoctorId)
         {
-            var Tests = await TestData.GetTestsByDoctorIdAsync(DoctorId);
+            var Tests = await _testData.GetTestsByDoctorIdAsync(DoctorId);
            
 
             return Tests;
@@ -126,7 +128,7 @@ namespace MCMSBussinessLogic
 
         public static async Task<List<PatientDoctorDto>> GetAllPatientDoctorPairsAsync()
         {
-            return await TestData.GetPatientDoctorPairsAsync();
+            return await _testData.GetPatientDoctorPairsAsync();
         }
 
 

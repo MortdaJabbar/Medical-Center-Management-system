@@ -5,13 +5,14 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
 
-        public static class TwoFactorCodeData
+        public class TwoFactorCodeData : ITwoFactorCodeData
         {
-            public static async Task<bool> CreateCodeAsync(Guid userId, string code, DateTime expiry)
+            public async Task<bool> CreateCodeAsync(Guid userId, string code, DateTime expiry)
             {
                 using var conn = new SqlConnection(AppConfig.ConnectionString);
                 using var cmd = new SqlCommand("CreateTwoFactorCode", conn)
@@ -27,7 +28,7 @@ namespace MCMSDAL
                 return await cmd.ExecuteNonQueryAsync() > 0;
             }
 
-            public static async Task<(string Code, DateTime Expiry, bool IsUsed)?> GetLatestCodeAsync(Guid userId)
+            public async Task<(string Code, DateTime Expiry, bool IsUsed)?> GetLatestCodeAsync(Guid userId)
             {
                 using var conn = new SqlConnection(AppConfig.ConnectionString);
                 using var cmd = new SqlCommand(@"
@@ -52,7 +53,7 @@ namespace MCMSDAL
                 return null;
             }
 
-            public static async Task<bool> MarkAsUsedAsync(Guid userId, string code)
+            public async Task<bool> MarkAsUsedAsync(Guid userId, string code)
             {
                 using var conn = new SqlConnection(AppConfig.ConnectionString);
                 using var cmd = new SqlCommand(@"

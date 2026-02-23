@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using MCMSDAL.Interfaces;
 
 
 namespace MCMSDAL
@@ -72,10 +73,10 @@ namespace MCMSDAL
         
     }
 
-    public class UserAccountData
+    public class UserAccountData : IUserAccountData
     {
         // Method to create a new user account
-        public static async Task<Guid?> CreateUserAccountAsync(UserAccountDto dto)
+        public async Task<Guid?> CreateUserAccountAsync(UserAccountDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("CreateUserAccount", connection)
@@ -104,7 +105,7 @@ namespace MCMSDAL
                 ? (Guid?)userIdParam.Value
                 : null;
         }
-        public static async Task<bool> ActivateUserAsync(Guid userId)
+        public async Task<bool> ActivateUserAsync(Guid userId)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("ActivateUser", connection)
@@ -124,7 +125,7 @@ namespace MCMSDAL
 
             return false;
         }
-        public static async Task<UserAccountDto?> FindByEmailAsync(string email)
+        public async Task<UserAccountDto?> FindByEmailAsync(string email)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("GetUserAccountByEmail", conn)
@@ -152,7 +153,7 @@ namespace MCMSDAL
 
             return null;
         }
-        public static async Task<List<UserAccountDto>> GetAllAsync()
+        public async Task<List<UserAccountDto>> GetAllAsync()
         {
          
             var list = new List<UserAccountDto>();
@@ -180,7 +181,7 @@ namespace MCMSDAL
 
             return list;
         }
-        public static async Task<UserAccountDto?> FindByIdAsync(Guid userId)
+        public async Task<UserAccountDto?> FindByIdAsync(Guid userId)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("GetUserAccountById", conn)
@@ -203,7 +204,7 @@ namespace MCMSDAL
                 }
                 : null;
         }
-        public static async Task<bool> UpdateAsync(UserAccountDto dto)
+        public async Task<bool> UpdateAsync(UserAccountDto dto)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("UpdateUserAccount", conn)
@@ -220,7 +221,7 @@ namespace MCMSDAL
             return  rowsAffected > 0;
         }
 
-        public static async Task<bool> ResetPassword(Guid userId, string newPasswordHash)
+        public async Task<bool> ResetPassword(Guid userId, string newPasswordHash)
         {
             using (SqlConnection conn = new SqlConnection(AppConfig.ConnectionString))
             using (SqlCommand cmd = new SqlCommand(@"
@@ -237,7 +238,7 @@ namespace MCMSDAL
             }
         }
 
-        public static async Task<bool> DeleteAsync(Guid userId)
+        public async Task<bool> DeleteAsync(Guid userId)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("DeleteUserAccount", conn)
@@ -249,7 +250,7 @@ namespace MCMSDAL
             int rowsAffected = (int)await cmd.ExecuteScalarAsync();
             return rowsAffected > 0;
         }
-        public static async Task<bool> ChangePasswordAsync(Guid userId, string newPasswordHash)
+        public async Task<bool> ChangePasswordAsync(Guid userId, string newPasswordHash)
         {
             using var conn = new SqlConnection(AppConfig.ConnectionString);
             using var cmd = new SqlCommand("ChangeUserPassword", conn)
@@ -267,7 +268,7 @@ namespace MCMSDAL
             }
             return false;
         }
-        public static async Task<List<UserAccountDetailsDto>> GetAllUserAccountsDetailedAsync()
+        public async Task<List<UserAccountDetailsDto>> GetAllUserAccountsDetailedAsync()
         {
             var users = new List<UserAccountDetailsDto>();
 
@@ -303,7 +304,7 @@ namespace MCMSDAL
             return users;
         }
 
-        public static async Task<List<PatientWithoutAccountDto>> GetPatientsWithoutAccountAsync()
+        public async Task<List<PatientWithoutAccountDto>> GetPatientsWithoutAccountAsync()
         {
             var list = new List<PatientWithoutAccountDto>();
 
@@ -324,7 +325,7 @@ namespace MCMSDAL
 
             return list;
         }
-        public static async Task<List<DoctorWithoutAccountDto>> GetDoctorsWithoutAccountAsync()
+        public async Task<List<DoctorWithoutAccountDto>> GetDoctorsWithoutAccountAsync()
         {
             var list = new List<DoctorWithoutAccountDto>();
 
@@ -345,7 +346,7 @@ namespace MCMSDAL
 
             return list;
         }
-        public static async Task<List<PharmacistWithoutAccountDto>> GetPharmacistsWithoutAccountAsync()
+        public async Task<List<PharmacistWithoutAccountDto>> GetPharmacistsWithoutAccountAsync()
         {
             var list = new List<PharmacistWithoutAccountDto>();
 
@@ -366,7 +367,7 @@ namespace MCMSDAL
 
             return list;
         }
-        public static async Task<List<StaffWithoutAccountDto>> GetStaffWithoutAccountAsync()
+        public async Task<List<StaffWithoutAccountDto>> GetStaffWithoutAccountAsync()
         {
             var list = new List<StaffWithoutAccountDto>();
 

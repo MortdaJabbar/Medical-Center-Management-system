@@ -11,10 +11,32 @@ namespace MCMSBLL
         public Guid UserId { get; set; }
         public string? NewRefreshToken { get; set; }
     }
-    public class RefreshTokenService
+    public class RefreshTokenService : IRefreshTokenService
     {
+        private static readonly RefreshTokenData _refreshTokenData = new();
+
         private const int RefreshTokenBytes = 64;
         private const int RefreshTokenDays = 14;
+
+        public async Task<string?> CreateTokenAsync(Guid userId, string? ip, string? userAgent)
+        {
+            return await CreateAsync(userId, ip, userAgent);
+        }
+
+        public async Task<RefreshTokenResult> RotateTokenAsync(string oldRawToken, string? ip, string? userAgent)
+        {
+            return await RotateAsync(oldRawToken, ip, userAgent);
+        }
+
+        public async Task<bool> RevokeTokenAsync(string rawToken, string? ip)
+        {
+            return await RevokeAsync(rawToken, ip);
+        }
+
+        public async Task RevokeAllTokensAsync(Guid userId, string? ip)
+        {
+            await RevokeAllAsync(userId, ip);
+        }
 
         // =========================================
         // CREATE (called on successful login)
@@ -36,7 +58,9 @@ namespace MCMSBLL
                 UserAgent = userAgent
             };
 
-            var tokenId = await RefreshTokenData.CreateRefreshTokenAsync(dto);
+            var tokenId = await _refreshTokenData.CreateRefreshTokenAsync(dto);
+
+
 
             if (tokenId == null)
                 return null;
@@ -57,7 +81,7 @@ namespace MCMSBLL
             var newRawToken = GenerateSecureToken();
             var newHash = HashToken(newRawToken);
 
-            var rotateResult = await RefreshTokenData.RotateAsync(
+            var rotateResult = await _refreshTokenData.RotateAsync(
                 oldHash,
                 newHash,
                 DateTime.UtcNow.AddDays(RefreshTokenDays),
@@ -99,7 +123,7 @@ namespace MCMSBLL
             string? ip)
         {
             var hash = HashToken(rawToken);
-            var status = await RefreshTokenData.RevokeAsync(hash, ip);
+            var status = await _refreshTokenData.RevokeAsync(hash, ip);
 
             return status == 0;
         }
@@ -111,7 +135,7 @@ namespace MCMSBLL
             Guid userId,
             string? ip)
         {
-            await RefreshTokenData.RevokeAllForUserAsync(userId, ip);
+            await _refreshTokenData.RevokeAllForUserAsync(userId, ip);
         }
 
         // =========================================

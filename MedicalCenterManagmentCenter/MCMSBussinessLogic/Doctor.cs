@@ -9,8 +9,14 @@ using System.Threading.Tasks;
 
 namespace MCMSBussinessLogic
 {
-    public class Doctor : Person
+    public class Doctor : Person, IDoctor
     {
+        private static readonly DoctorData _doctorData = new();
+        private static readonly PersonData _personData = new();
+        private static readonly PharmacistData _pharmacistData = new();
+        private static readonly AppointmentData _appointmentData = new();
+        private static readonly TestData _testData = new();
+
         public Guid DoctorId { get; set; }
         public string Specialization { get; set; }
         public bool Available { get; set; }
@@ -55,7 +61,7 @@ namespace MCMSBussinessLogic
         public async Task<bool> AddNewDoctorAsync()
         {
             bool IsDoctor     = await Doctor.IsDoctorExistsByNameAsync(FirstName, SecondName, ThirdName);
-            bool IsPharmacist = await PharmacistData.IsPharmacistExistsByNameAsync(FirstName, SecondName, ThirdName);
+            bool IsPharmacist = await _pharmacistData.IsPharmacistExistsByNameAsync(FirstName, SecondName, ThirdName);
 
             if (IsDoctor || IsPharmacist) return false;
              
@@ -67,7 +73,7 @@ namespace MCMSBussinessLogic
             
             else
             {
-              Guid   personId = await PersonData.AddPersonAsync(this.PDTO);
+                            Guid   personId = await _personData.AddPersonAsync(this.PDTO);
                 if (personId == Guid.Empty) return false;
                 this.PersonId = personId;
             }
@@ -81,30 +87,30 @@ namespace MCMSBussinessLogic
                 ScheduleId = this.ScheduleId
             };
 
-            this.DoctorId = await DoctorData.AddNewDoctorAsync(newDoctorDto);
+            this.DoctorId = await _doctorData.AddNewDoctorAsync(newDoctorDto);
             return this.DoctorId != Guid.Empty;
         }
         // Asynchronous method to update a doctor's information
         public async Task<bool> UpdateDoctorAsync()
         {
-            if (!await PersonData.IsPersonExistsByIdAsync(PersonId) || !await DoctorData.IsDoctorExistsByIdAsync(DoctorId))
+            if (!await _personData.IsPersonExistsByIdAsync(PersonId) || !await _doctorData.IsDoctorExistsByIdAsync(DoctorId))
                 return false;
 
-            bool personUpdated = await PersonData.UpdatePersonAsync(PDTO);
-            bool doctorUpdated = await DoctorData.UpdateDoctorAsync(DTO);
+            bool personUpdated = await _personData.UpdatePersonAsync(PDTO);
+            bool doctorUpdated = await _doctorData.UpdateDoctorAsync(DTO);
             return personUpdated && doctorUpdated;
         }
         // Asynchronous method to find a doctor by their ID
         public static async Task<Doctor?> FindDoctorByIdAsync(Guid doctorId)
         {
-            var dto = await DoctorData.GetDoctorByIdAsync(doctorId);
+            var dto = await _doctorData.GetDoctorByIdAsync(doctorId);
             return (dto != null) ? new Doctor(dto) : null;
         }
         // Asynchronous method to delete a doctor by their ID
         public  static  async Task<bool> DeleteDoctorByIdAsync(Guid DoctorId, Guid PersonID)
         {
 
-            bool DoctorDeleted = await DoctorData.DeleteDoctorAsync(DoctorId); 
+            bool DoctorDeleted = await _doctorData.DeleteDoctorAsync(DoctorId); 
             
             bool isPatient = await Patient.IsPatientExistsByPersonIdAsync(PersonID);
            
@@ -128,16 +134,16 @@ namespace MCMSBussinessLogic
         }
         public static async Task<bool> IsDoctorExistsByNameAsync(string firstName, string secondName, string? thirdName = null)
         {
-            return await DoctorData.IsDoctorExistsByNameAsync(firstName, secondName, thirdName);
+            return await _doctorData.IsDoctorExistsByNameAsync(firstName, secondName, thirdName);
         }
         public static async Task<bool> IsDoctorExistsByPersonIdAsync(Guid personId)
         {
-            return await DoctorData.IsDoctorExistsByPersonIdAsync(personId);
+            return await _doctorData.IsDoctorExistsByPersonIdAsync(personId);
         }
         public static  async Task<List<Doctor>> GetAllDoctorsAsync()
         {
             // Fetch doctor data from the database
-            var doctorDTOs = await DoctorData.GetAllDoctorsAsync( );
+            var doctorDTOs = await _doctorData.GetAllDoctorsAsync( );
 
             // Map the DTOs to domain models
             var doctors = doctorDTOs.Select(dto => new Doctor(dto)).ToList();
@@ -147,7 +153,7 @@ namespace MCMSBussinessLogic
 
         public static async Task<List<DoctorSummaryDto>> GetDoctorSummariesAsync()
         {
-            var doctorDTOs = await DoctorData.GetAllDoctorsAsync();
+            var doctorDTOs = await _doctorData.GetAllDoctorsAsync();
 
             var summaries = doctorDTOs.Select(dto => new DoctorSummaryDto
             {
@@ -163,12 +169,12 @@ namespace MCMSBussinessLogic
 
         public static async Task<List<AppointmentByDoctorDto>> GetAppointmentsByDoctorIdAsync(Guid doctorId)
         {
-            return await AppointmentData.GetAppointmentsByDoctorIdAsync(doctorId);
+            return await _appointmentData.GetAppointmentsByDoctorIdAsync(doctorId);
         }
 
         public static async Task<List<TestDoctorDto>> GetTestsByDoctorIdAsync(Guid DoctorId)
         {
-            var Tests = await TestData.GetTestsByDoctorIdAsync(DoctorId);
+            var Tests = await _testData.GetTestsByDoctorIdAsync(DoctorId);
 
 
             return Tests;
@@ -182,7 +188,7 @@ namespace MCMSBussinessLogic
 
         public static async Task<DoctorDashboardStatsDto?> GetDashboardStatsAsync(Guid doctorId)
         {
-            return await DoctorData.GetDoctorDashboardStatsAsync(doctorId);
+            return await _doctorData.GetDoctorDashboardStatsAsync(doctorId);
         }
 
     }

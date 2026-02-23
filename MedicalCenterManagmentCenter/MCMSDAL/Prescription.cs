@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCMSDAL.Interfaces;
 
 namespace MCMSDAL
 {
@@ -72,9 +73,9 @@ namespace MCMSDAL
         public int? Refills { get; set; }
         public string? Instructions { get; set; }
     }
-    public static class PrescriptionData
+    public class PrescriptionData : IPrescriptionData
     {
-        public static async Task<int> CreatePrescriptionAsync(PrescriptionDto dto)
+        public async Task<int> CreatePrescriptionAsync(PrescriptionDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("InsertPrescription", connection)
@@ -94,7 +95,7 @@ namespace MCMSDAL
             return Convert.ToInt32(result);
         }
 
-        public static async Task<bool> UpdatePrescriptionAsync(PrescriptionDto dto)
+        public async Task<bool> UpdatePrescriptionAsync(PrescriptionDto dto)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("UpdatePrescription", connection)
@@ -114,7 +115,7 @@ namespace MCMSDAL
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        public static async Task<PrescriptionDto?> GetPrescriptionByIdAsync(int id)
+        public async Task<PrescriptionDto?> GetPrescriptionByIdAsync(int id)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("GetPrescriptionByID", connection)
@@ -143,7 +144,7 @@ namespace MCMSDAL
             return null;
         }
 
-        public static async Task<List<PrescriptionDto>> GetAllPrescriptionsAsync()
+        public async Task<List<PrescriptionDto>> GetAllPrescriptionsAsync()
         {
             var list = new List<PrescriptionDto>();
             using var connection = new SqlConnection(AppConfig.ConnectionString);
@@ -172,7 +173,7 @@ namespace MCMSDAL
             return list;
         }
 
-        public static async Task<List<PrescriptionDto>> GetPagedPrescriptionsAsync(int pageNumber, int pageSize)
+        public async Task<List<PrescriptionDto>> GetPagedPrescriptionsAsync(int pageNumber, int pageSize)
         {
             var list = new List<PrescriptionDto>();
             using var connection = new SqlConnection(AppConfig.ConnectionString);
@@ -204,7 +205,7 @@ namespace MCMSDAL
             return list;
         }
 
-        public static async Task<bool> DeletePrescriptionAsync(int id)
+        public async Task<bool> DeletePrescriptionAsync(int id)
         {
             using var connection = new SqlConnection(AppConfig.ConnectionString);
             using var command = new SqlCommand("DeletePrescription", connection)
@@ -225,7 +226,7 @@ namespace MCMSDAL
             return false;
         }
 
-        public static async Task<  List<PrescriptionPatientDto>  > GetPrescriptionsByPatientIdAsync(Guid patientId)
+        public async Task<  List<PrescriptionPatientDto>  > GetPrescriptionsByPatientIdAsync(Guid patientId)
         {
             var prescriptions = new List<PrescriptionPatientDto>();
 
@@ -262,7 +263,7 @@ namespace MCMSDAL
 
             return prescriptions;
         }
-        public static async Task<List<PrescriptionDetailsDto>> GetAllWithNamesAsync()
+        public async Task<List<PrescriptionDetailsDto>> GetAllWithNamesAsync()
         {
             var prescriptions = new List<PrescriptionDetailsDto>();
 
@@ -299,7 +300,7 @@ namespace MCMSDAL
             return prescriptions;
         }
 
-        public static  async Task<List<PrescriptionByDoctorDto>> GetPrescriptionsByDoctorIdAsync(Guid doctorId)
+        public async Task<List<PrescriptionByDoctorDto>> GetPrescriptionsByDoctorIdAsync(Guid doctorId)
         {
             var list = new List<PrescriptionByDoctorDto>();
 

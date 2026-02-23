@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace MCMSBussinessLogic
 {
-    public class Medication
+    public class Medication : IMedication
     {
+        private static readonly MedicationData _medicationData = new();
+
         public int MedicationID { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
@@ -39,28 +41,28 @@ namespace MCMSBussinessLogic
 
         public async Task<bool> AddNewMedicationAsync()
         {
-            return await MedicationData.InsertMedicationAsync(this.DTO);
+            return await _medicationData.InsertMedicationAsync(this.DTO);
         }
 
         public async Task<bool> UpdateMedicationAsync()
         {
-            return await MedicationData.UpdateMedicationAsync(this.DTO);
+            return await _medicationData.UpdateMedicationAsync(this.DTO);
         }
 
         public static async Task<bool> DeleteMedicationAsync(int id)
         {
-            return await MedicationData.DeleteMedicationAsync(id);
+            return await _medicationData.DeleteMedicationAsync(id);
         }
 
         public static async Task<Medication?> FindByIdAsync(int id)
         {
-            var dto = await MedicationData.GetMedicationByIdAsync(id);
+            var dto = await _medicationData.GetMedicationByIdAsync(id);
             return dto != null ? new Medication(dto) : null;
         }
 
         public static async Task<List<Medication>> GetAllAsync()
         {
-            var dtos = await MedicationData.GetAllMedicationsAsync( );
+            var dtos = await _medicationData.GetAllMedicationsAsync( );
             return dtos.Select(dto => new Medication(dto)).ToList();
         }
     }

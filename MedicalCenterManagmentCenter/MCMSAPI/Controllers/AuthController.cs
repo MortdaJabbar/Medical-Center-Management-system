@@ -105,15 +105,19 @@ namespace MCMSAPI.Controllers
         [HttpPost("confirm-2fa")]
         public async Task<IActionResult> Confirm2FA(Guid userId, string code)
         {
-            var result = await TwoFactorCodeData.GetLatestCodeAsync(userId);
-            if (result == null) return BadRequest("Invalid code.");
+            var twoFactorCodeData = new TwoFactorCodeData();
 
-            var (storedCode, expiry, isUsed) = result.Value;
+            var result = await twoFactorCodeData.GetLatestCodeAsync(userId);
+            if (result is null) return BadRequest("Invalid code.");
+
+            var storedCode = result.Value.Code;
+            var expiry = result.Value.Expiry;
+            var isUsed = result.Value.IsUsed;
 
             if (isUsed || expiry < DateTime.UtcNow || storedCode != code)
                 return BadRequest("Invalid code.");
 
-            await TwoFactorCodeData.MarkAsUsedAsync(userId, code);
+            await twoFactorCodeData.MarkAsUsedAsync(userId, code);
 
             var user = await UserAccount.FindByIDAsync(userId);
             if (user == null) return Unauthorized();
