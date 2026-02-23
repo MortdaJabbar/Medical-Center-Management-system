@@ -2,7 +2,8 @@
 using MCMSAPI.Helper;
 using MCMSBLL;
 using MCMSBussinessLogic;
-using MCMSDAL;
+using MCMSBussinessLogic.Interfaces;
+using MCMSDAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -15,6 +16,10 @@ namespace MCMSAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly IUserAccountService _userAccountService;
+        private readonly IRefreshTokenService _refreshTokenService;
+        private readonly ITwoFactorCodeData _twoFactorCodeData;
+        private readonly IEmailSenderService _emailSender;
         private void SetAccessTokenCookie(string accessToken, int expiresMinutes)
         {
             Response.Cookies.Append("accessToken", accessToken, new CookieOptions
@@ -50,9 +55,18 @@ namespace MCMSAPI.Controllers
             Response.Cookies.Delete("refreshToken");
         }
 
-        public AuthController(IConfiguration config)
+        public AuthController(
+            IConfiguration config,
+            IUserAccountService userAccountService,
+            IRefreshTokenService refreshTokenService,
+            ITwoFactorCodeData twoFactorCodeData,
+            IEmailSenderService emailSender)
         {
             _config = config;
+            _userAccountService = userAccountService;
+            _refreshTokenService = refreshTokenService;
+            _twoFactorCodeData = twoFactorCodeData;
+            _emailSender = emailSender;
         }
 
         private (string Key, string Issuer, string Audience, int ExpiresInMinutes) GetJwtOptions()
@@ -76,7 +90,7 @@ namespace MCMSAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await UserAccount.FindByEmailAsync(dto.Email);
+            var user = await _userAccountService.FindByEmailAsync(dto.Email);
 
             if (user == null || !user.IsActive)
                 return Unauthorized("Invalid credentials.");
@@ -86,7 +100,7 @@ namespace MCMSAPI.Controllers
 
             if (user.Is2FAEnabled)
             {
-                Task.Run(() => EmailSender.SendTwoFactorCodeAsync(user.Email, user.UserId));
+                Task.Run(() => _emailSender.SendTwoFactorCodeAsync(user.Email, user.UserId));
                 return Ok(new
                 {
                     user.UserId,
@@ -105,9 +119,7 @@ namespace MCMSAPI.Controllers
         [HttpPost("confirm-2fa")]
         public async Task<IActionResult> Confirm2FA(Guid userId, string code)
         {
-            var twoFactorCodeData = new TwoFactorCodeData();
-
-            var result = await twoFactorCodeData.GetLatestCodeAsync(userId);
+            var result = await _twoFactorCodeData.GetLatestCodeAsync(userId);
             if (result is null) return BadRequest("Invalid code.");
 
             var storedCode = result.Value.Code;
@@ -117,9 +129,9 @@ namespace MCMSAPI.Controllers
             if (isUsed || expiry < DateTime.UtcNow || storedCode != code)
                 return BadRequest("Invalid code.");
 
-            await twoFactorCodeData.MarkAsUsedAsync(userId, code);
+            await _twoFactorCodeData.MarkAsUsedAsync(userId, code);
 
-            var user = await UserAccount.FindByIDAsync(userId);
+            var user = await _userAccountService.FindByIdAsync(userId);
             if (user == null) return Unauthorized();
 
             return await IssueTokens(user);
@@ -137,7 +149,7 @@ namespace MCMSAPI.Controllers
             if (!Request.Cookies.TryGetValue("refreshToken", out var oldRefreshToken))
                 return Unauthorized("Refresh token missing.");
 
-            var rotateResult = await RefreshTokenService.RotateAsync(
+            var rotateResult = await _refreshTokenService.RotateTokenAsync(
                 oldRefreshToken,
                 HttpContext.Connection.RemoteIpAddress?.ToString(),
                 Request.Headers.UserAgent.ToString()
@@ -149,7 +161,13 @@ namespace MCMSAPI.Controllers
                 return Unauthorized("Invalid refresh token.");
             }
 
-            var user = await UserAccount.FindByIDAsync(rotateResult.UserId);
+            if (string.IsNullOrWhiteSpace(rotateResult.NewRefreshToken))
+            {
+                ClearAuthCookies();
+                return Unauthorized("Invalid refresh token.");
+            }
+
+            var user = await _userAccountService.FindByIdAsync(rotateResult.UserId);
             if (user == null)
                 return Unauthorized("User not found.");
 
@@ -192,7 +210,7 @@ namespace MCMSAPI.Controllers
                 if (!Guid.TryParse(userIdClaim, out var userId))
                     return BadRequest("Invalid token claims.");
 
-                await RefreshTokenService.RevokeAllAsync(
+                await _refreshTokenService.RevokeAllTokensAsync(
                     userId,
                     HttpContext.Connection.RemoteIpAddress?.ToString()
                 );
@@ -200,7 +218,7 @@ namespace MCMSAPI.Controllers
             }
             else 
             {
-                await RefreshTokenService.RevokeAsync(
+                await _refreshTokenService.RevokeTokenAsync(
                         oldRefreshToken,
                         HttpContext.Connection.RemoteIpAddress?.ToString()
                     );
@@ -224,7 +242,7 @@ namespace MCMSAPI.Controllers
             if (!Guid.TryParse(userIdClaim, out var userId))
                 return BadRequest("Invalid token claims.");
 
-            await RefreshTokenService.RevokeAllAsync(
+            await _refreshTokenService.RevokeAllTokensAsync(
                 userId,
                 HttpContext.Connection.RemoteIpAddress?.ToString()
             );
@@ -272,11 +290,14 @@ namespace MCMSAPI.Controllers
                 jwt.ExpiresInMinutes
             );
 
-            var refreshToken = await RefreshTokenService.CreateAsync(
+            var refreshToken = await _refreshTokenService.CreateTokenAsync(
                 user.UserId,
                 HttpContext.Connection.RemoteIpAddress?.ToString(),
                 Request.Headers.UserAgent.ToString()
             );
+
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                return StatusCode(500, "Failed to create refresh token.");
 
             // ✅ Set both tokens in HttpOnly cookies
             SetAccessTokenCookie(accessToken, jwt.ExpiresInMinutes);

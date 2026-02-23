@@ -1,4 +1,5 @@
 ﻿using MCMSDAL;
+using MCMSDAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace MCMSBussinessLogic
 {
     public class Medication : IMedication
     {
-        private static readonly MedicationData _medicationData = new();
+        private static readonly IMedicationData _medicationData = new MedicationData();
 
         public int MedicationID { get; set; }
         public string Name { get; set; }

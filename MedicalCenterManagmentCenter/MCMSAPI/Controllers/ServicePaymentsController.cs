@@ -1,7 +1,8 @@
 ﻿using MCMSBussinessLogic;
-using MCMSDAL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MCMSBussinessLogic.Interfaces;
+using MCMSDAL;
 
 namespace MCMSAPI.Controllers
 {
@@ -9,9 +10,14 @@ namespace MCMSAPI.Controllers
     [ApiController]
     public class ServicePaymentsController : ControllerBase
     {
- 
-            private readonly ServicePayment _logic = new();
-            private readonly StripeService _stripe = new();
+            private readonly IServicePayment _logic;
+            private readonly IStripeService _stripe;
+
+            public ServicePaymentsController(IServicePayment logic, IStripeService stripe)
+            {
+                _logic = logic;
+                _stripe = stripe;
+            }
 
             // ✅ 1. إنشاء جلسة دفع Stripe + حفظ الدفع
             [HttpPost("create-stripe-session")]

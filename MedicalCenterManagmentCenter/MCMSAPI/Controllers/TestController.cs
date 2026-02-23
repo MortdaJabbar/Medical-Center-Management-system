@@ -4,8 +4,9 @@
     using AutoMapper;
     using MCMSAPI.dtos;
     using MCMSBussinessLogic;
-    using MCMSDAL;
+    using MCMSBussinessLogic.Interfaces;
     using Microsoft.AspNetCore.Authorization;
+    using MCMSDAL;
 
     [Route("api/Tests")]
     [ApiController]
@@ -13,10 +14,16 @@
     public class TestsController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly ITestService _testService;
+        private readonly IDoctorService _doctorService;
+        private readonly IPatientService _patientService;
 
-        public TestsController(IMapper mapper)
+        public TestsController(IMapper mapper, ITestService testService, IDoctorService doctorService, IPatientService patientService)
         {
             _mapper = mapper;
+            _testService = testService;
+            _doctorService = doctorService;
+            _patientService = patientService;
         }
         [Authorize(Roles = "Staff")]
         [HttpPost("add")]
@@ -32,9 +39,9 @@
             }
 
             var test = _mapper.Map<Test>(addTestDto);
-            bool isAdded = await test.AddNewTestAsync();
+            var newId = await _testService.CreateAsync(test);
 
-            return isAdded ? Ok(test.TestID) : BadRequest("Test could not be added.");
+            return newId != null ? Ok(newId.Value) : BadRequest("Test could not be added.");
         }
         [Authorize(Roles = "Staff")]
         [HttpPut("update/{id}")]
@@ -49,15 +56,15 @@
                 return BadRequest(new { errors });
             }
 
-            Test? test = await Test.FindTestByIdAsync(id);
+            Test? test = await _testService.FindByIdAsync(id);
+            if (test == null) return NotFound("Test not found.");
             test.Cost = UpdatedTest.Cost;
             test.TestResult = UpdatedTest.TestResult;
             test.Status = UpdatedTest.Stauts;
             test.Notes = UpdatedTest.Notes;
 
 
-
-            var updated = await test.UpdateTestAsync();
+            var updated = await _testService.UpdateAsync(test);
 
             return updated ? Ok("Updated successfully.") : NotFound("Test not found.");
         }
@@ -65,14 +72,14 @@
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTestById(int id)
         {
-            var test = await Test.FindTestByIdAsync(id);
+            var test = await _testService.FindByIdAsync(id);
             return test != null ? Ok(_mapper.Map<TestDto>(test)) : NotFound("Test not found.");
         }
         [Authorize(Roles = "Staff")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllTests(int page = 1, int size = 10)
         {
-            var tests = await Test.GetAllTestsAsync(page, size);
+            var tests = await _testService.GetPagedAsync(page, size);
            
             return Ok(tests);
         }
@@ -80,14 +87,14 @@
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTest(int id)
         {
-            bool deleted = await Test.DeleteTestAsync(id);
+            bool deleted = await _testService.DeleteAsync(id);
             return deleted ? Ok("Deleted successfully.") : NotFound("Test not found.");
         }
         [Authorize(Roles = "Staff")]
         [HttpGet("detailed")]
         public async Task<IActionResult> GetDetailedTests()
         {
-            var result = await Test.GetAllTestsAsync();
+            var result = await _testService.GetAllDetailedAsync();
             return Ok(result);
         }
         [Authorize(Roles = "Doctor")]
@@ -99,7 +106,7 @@
             if (doctorId == Guid.Empty)
                 return BadRequest("Invalid Doctor ID");
 
-            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindByIdAsync(doctorId);
 
             if (doctor == null)
                 return NotFound();
@@ -112,7 +119,7 @@
             if (!authResult.Succeeded)
                 return Forbid();
 
-            var tests = await Test.GetTestsByDoctorIdAsync(doctorId);
+            var tests = await _testService.GetByDoctorIdAsync(doctorId);
 
             return Ok(tests);
         }
@@ -124,7 +131,7 @@
             if (patientId == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
 
-            var patient = await Patient.FindPatientByIdAsync(patientId);
+            var patient = await _patientService.FindByIdAsync(patientId);
 
             if (patient == null)
                 return NotFound();
@@ -136,7 +143,7 @@
 
             if (!authResult.Succeeded)
                 return Forbid();
-            var result = await Test.GetTestsByPatientIdAsync(patientId);
+            var result = await _testService.GetByPatientIdAsync(patientId);
             return Ok(result);
             
         }
@@ -144,7 +151,7 @@
         [HttpGet("pairs")]
         public async Task<IActionResult> GetPairs()
         {
-            var result = await Test.GetAllPatientDoctorPairsAsync();
+            var result = await _testService.GetPairsAsync();
             return Ok(result);
         }
 

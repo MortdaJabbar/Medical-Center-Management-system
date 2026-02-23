@@ -1,4 +1,5 @@
 ﻿using MCMSBussinessLogic;
+using MCMSBussinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Stripe.Checkout;
@@ -10,7 +11,14 @@ namespace MCMSAPI.Controllers
     public class WebhookController : ControllerBase
     {
 
-        private readonly string _webhookSecret = "whsec_your_webhook_secret"; // غيّره
+        private readonly IServicePayment _servicePayment;
+
+        private readonly string _webhookSecret = "whsec_your_webhook_secret"; 
+
+        public WebhookController(IServicePayment servicePayment)
+        {
+            _servicePayment = servicePayment;
+        }
 
         [HttpPost]
         public async Task<IActionResult> Handle()
@@ -30,8 +38,7 @@ namespace MCMSAPI.Controllers
                     var session = stripeEvent.Data.Object as Session;
 
                     // تحديث حالة الدفع في قاعدة البيانات
-                    var logic = new ServicePayment();
-                    await logic.MarkPaymentCompletedFromStripeAsync(session.Id);
+                    await _servicePayment.MarkPaymentCompletedFromStripeAsync(session.Id);
                 }
 
                 return Ok();

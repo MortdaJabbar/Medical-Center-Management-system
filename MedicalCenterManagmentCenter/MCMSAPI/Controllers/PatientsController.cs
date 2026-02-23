@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MCMSBussinessLogic;
-using MCMSDAL;
 using MCMSAPI.dtos.Mapper;
 using AutoMapper;
 using System.Text.RegularExpressions;
 using MCMSAPI.dtos.PatientsDto;
 using Microsoft.AspNetCore.Authorization;
+using MCMSBussinessLogic.Interfaces;
+using MCMSDAL;
 namespace MCMSAPI.Controllers
 {
     [Route("api/Patients")]
@@ -15,10 +16,12 @@ namespace MCMSAPI.Controllers
     {
    
         private readonly IMapper _mapper;
+        private readonly IPatientService _patientService;
 
-        public PatientsController(IMapper mapper)
+        public PatientsController(IMapper mapper, IPatientService patientService)
         {
             _mapper = mapper;
+            _patientService = patientService;
         }
         [Authorize(Roles = "Admin")]
         [HttpPost("add")]
@@ -35,16 +38,16 @@ namespace MCMSAPI.Controllers
             }
 
             var patient = _mapper.Map<Patient>(dto);
-            
-            var result = await patient.AddNewPatientAsync();
 
-            return result ? Ok(patient.DTO.PatientId) : BadRequest("Failed to add patient");
+            var newId = await _patientService.CreateAsync(patient);
+
+            return newId != null ? Ok(newId.Value) : BadRequest("Failed to add patient");
         }
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPatient(Guid id)
         {
-            var patient = await Patient.FindPatientByIdAsync(id);
+            var patient = await _patientService.FindByIdAsync(id);
             return (patient == null) ? NotFound() : Ok(patient.DTO);
         }
         [Authorize(Roles = "Admin")]
@@ -63,14 +66,14 @@ namespace MCMSAPI.Controllers
             }
 
 
-            Patient? Patient = await Patient.FindPatientByIdAsync(PatientId);           
+            Patient? Patient = await _patientService.FindByIdAsync(PatientId);
 
             if ( Patient==null) return NotFound("No Patient With this patient id");
             
 
             _mapper.Map(dto, Patient);
 
-            bool updated = await Patient.UpdatePatientAsync();
+            bool updated = await _patientService.UpdateAsync(Patient);
 
             return updated ? Ok("Patient updated") : NotFound("Patient or person not found");
         }
@@ -78,14 +81,14 @@ namespace MCMSAPI.Controllers
         [HttpDelete("Delete/{patientId}/person/{personId}")]
         public async Task<IActionResult> DeletePatient(Guid patientId, Guid personId)
         {
-            bool deleted = await Patient.DeletePatientByIdAsync(patientId, personId);
+            bool deleted = await _patientService.DeleteAsync(patientId, personId);
             return deleted ? Ok("Deleted successfully") : NotFound("Could not delete patient");
         }
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllPatients( )
         {
-            var list = await Patient.GetAllPatientsAsync();
+            var list = await _patientService.GetAllAsync();
             return Ok(list.Select(p => p.DTO));
         }
         [Authorize(Roles = "Patient")]
@@ -96,7 +99,7 @@ namespace MCMSAPI.Controllers
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
 
-            var patient = await Patient.FindPatientByIdAsync(id);
+            var patient = await _patientService.FindByIdAsync(id);
 
             if (patient == null)
                 return NotFound();
@@ -112,7 +115,7 @@ namespace MCMSAPI.Controllers
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
             
-            var result = await Patient.GetPatientAppoitments(id);
+            var result = await _patientService.GetAppointmentsAsync(id);
             return Ok(result);
         }
         [Authorize(Roles = "Patient")]
@@ -123,7 +126,7 @@ namespace MCMSAPI.Controllers
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
 
-            var patient = await Patient.FindPatientByIdAsync(id);
+            var patient = await _patientService.FindByIdAsync(id);
 
             if (patient == null)
                 return NotFound();
@@ -137,7 +140,7 @@ namespace MCMSAPI.Controllers
                 return Forbid();
            
 
-            var result = await Patient.GetPrescriptionsByPatientIdAsync(id);
+            var result = await _patientService.GetPrescriptionsAsync(id);
             return Ok(result);
         }
         [Authorize(Roles = "Patient")]
@@ -148,7 +151,7 @@ namespace MCMSAPI.Controllers
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
 
-            var patient = await Patient.FindPatientByIdAsync(id);
+            var patient = await _patientService.FindByIdAsync(id);
 
             if (patient == null)
                 return NotFound();
@@ -161,7 +164,7 @@ namespace MCMSAPI.Controllers
             if (!authResult.Succeeded)
                 return Forbid();
 
-            var result = await Patient.GetTestsByPatientIdAsync(id);
+            var result = await _patientService.GetTestsAsync(id);
             return Ok(result);
         }
         [Authorize(Roles = "Patient")]
@@ -172,7 +175,7 @@ namespace MCMSAPI.Controllers
             if (id == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
 
-            var patient = await Patient.FindPatientByIdAsync(id);
+            var patient = await _patientService.FindByIdAsync(id);
 
             if (patient == null)
                 return NotFound();
@@ -185,7 +188,7 @@ namespace MCMSAPI.Controllers
             if (!authResult.Succeeded)
                 return Forbid();
 
-            var result = await Patient.GetPatientDashboardStatsAsync(id);
+            var result = await _patientService.GetDashboardStatsAsync(id);
             if (result == null)
                 return NotFound();
 
@@ -199,7 +202,7 @@ namespace MCMSAPI.Controllers
             if (patientId == Guid.Empty)
                 return BadRequest("Invalid Patient ID");
 
-            var patient = await Patient.FindPatientByIdAsync(patientId);
+            var patient = await _patientService.FindByIdAsync(patientId);
 
             if (patient == null)
                 return NotFound();
@@ -211,7 +214,7 @@ namespace MCMSAPI.Controllers
 
             if (!authResult.Succeeded)
                 return Forbid();
-            var payments = await Patient.GetInvoicesForPatientAsync(patientId);
+            var payments = await _patientService.GetInvoicesAsync(patientId);
             return Ok(payments);
         }
 

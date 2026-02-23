@@ -2,7 +2,7 @@
 using MCMSAPI.dtos;
 using MCMSAPI.dtos.DoctorDto;
 using MCMSBussinessLogic;
-using MCMSDAL;
+using MCMSBussinessLogic.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +13,14 @@ namespace MCMSAPI.Controllers
     public class DoctorsController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly IDoctorService _doctorService;
+        private readonly ITestService _testService;
 
-        public DoctorsController(IMapper mapper)
+        public DoctorsController(IMapper mapper, IDoctorService doctorService, ITestService testService)
         {
             _mapper = mapper;
+            _doctorService = doctorService;
+            _testService = testService;
         }
         [Authorize(Roles = "Admin")]
         [HttpPost("add")]
@@ -34,9 +38,9 @@ namespace MCMSAPI.Controllers
 
           
             var doctor = _mapper.Map<Doctor>(addDoctorDto);
-            bool isAdded = await doctor.AddNewDoctorAsync();
+            var doctorId = await _doctorService.CreateAsync(doctor);
 
-            return isAdded ? Ok(doctor.DTO.DoctorId) : BadRequest("Doctor already exists or cannot be added.");
+            return doctorId != null ? Ok(doctorId.Value) : BadRequest("Doctor already exists or cannot be added.");
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("update/{id}")]
@@ -52,12 +56,12 @@ namespace MCMSAPI.Controllers
                 return BadRequest(new { errors = errors });
             }
 
-            Doctor? Doctor = await Doctor.FindDoctorByIdAsync(id);
+            Doctor? Doctor = await _doctorService.FindByIdAsync(id);
             if (Doctor == null) return NotFound("Doctor ID mismatch Or Doctor With this id.");
 
             _mapper.Map(doctorDto, Doctor);
 
-            bool updated = await Doctor.UpdateDoctorAsync();
+            bool updated = await _doctorService.UpdateAsync(Doctor);
 
             return updated ? Ok("Updated successfully.") : NotFound("Doctor not found.");
         }
@@ -74,7 +78,7 @@ namespace MCMSAPI.Controllers
 
                 return BadRequest(new { errors = errors });
             }
-            var doctor = await Doctor.FindDoctorByIdAsync(id);
+            var doctor = await _doctorService.FindByIdAsync(id);
             return doctor != null ? Ok(doctor.DTO) : NotFound("Doctor not found.");
         }
         [Authorize(Roles = "Admin")]
@@ -90,7 +94,7 @@ namespace MCMSAPI.Controllers
 
                 return BadRequest(new { errors = errors });
             }
-            var doctors = await Doctor.GetAllDoctorsAsync();
+            var doctors = await _doctorService.GetAllAsync();
             var dtoList = doctors.ConvertAll(d => d.DTO);
             return Ok(dtoList);
         }
@@ -107,7 +111,7 @@ namespace MCMSAPI.Controllers
 
                 return BadRequest(new { errors = errors });
             }
-            bool deleted = await Doctor.DeleteDoctorByIdAsync(doctorId, personId);
+            bool deleted = await _doctorService.DeleteAsync(doctorId, personId);
             return deleted ? Ok("Deleted successfully.") : NotFound("Doctor not found or could not be deleted.");
         }
         [Authorize(Roles ="Doctor")]
@@ -115,7 +119,7 @@ namespace MCMSAPI.Controllers
         public async Task<IActionResult> GetAppointmentsByDoctorId(Guid doctorId, [FromServices] IAuthorizationService authorizationService)
         {
 
-            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindByIdAsync(doctorId);
 
             if (doctor == null)
                 return NotFound("Doctor not found.");
@@ -130,7 +134,7 @@ namespace MCMSAPI.Controllers
                 return Forbid();
             try
             {
-                var results = await Doctor.GetAppointmentsByDoctorIdAsync(doctorId);
+                var results = await _doctorService.GetAppointmentsByDoctorIdAsync(doctorId);
 
                 if (results == null || results.Count == 0)
                     return Ok("No appointments found for the specified doctor.");
@@ -146,7 +150,7 @@ namespace MCMSAPI.Controllers
         [HttpGet("tests/{doctorId}")]
         public async Task<IActionResult> GetTestsByDoctorId(Guid doctorId ,[FromServices] IAuthorizationService authorizationService)
         {
-            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindByIdAsync(doctorId);
             if (doctor == null)
                 return NotFound();
 
@@ -157,7 +161,7 @@ namespace MCMSAPI.Controllers
 
             if (!auth.Succeeded)
                 return Forbid();
-            var tests = await Test.GetTestsByDoctorIdAsync(doctorId);
+            var tests = await _testService.GetByDoctorIdAsync(doctorId);
 
 
             return Ok(tests);
@@ -168,7 +172,7 @@ namespace MCMSAPI.Controllers
         public async Task<IActionResult> GetPrescriptionsByDoctorId(Guid doctorId,
     [FromServices] IAuthorizationService authorizationService)
         {
-            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindByIdAsync(doctorId);
             if (doctor == null)
                 return NotFound();
 
@@ -181,7 +185,7 @@ namespace MCMSAPI.Controllers
                 return Forbid();
             try
             {
-                var prescriptions = await Doctor.GetPrescriptionsByDoctorIdAsync(doctorId);
+                var prescriptions = await _doctorService.GetPrescriptionsByDoctorIdAsync(doctorId);
 
                 if (prescriptions == null || prescriptions.Count == 0)
                     return Ok("No prescriptions found for the specified doctor.");
@@ -199,7 +203,7 @@ namespace MCMSAPI.Controllers
         public async Task<IActionResult> GetDashboardStats(Guid doctorId,
     [FromServices] IAuthorizationService authorizationService)
         {
-            var doctor = await Doctor.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindByIdAsync(doctorId);
             if (doctor == null)
                 return NotFound();
 
@@ -213,7 +217,7 @@ namespace MCMSAPI.Controllers
 
             try
             {
-                var stats = await Doctor.GetDashboardStatsAsync(doctorId);
+                var stats = await _doctorService.GetDashboardStatsAsync(doctorId);
 
                 if (stats == null)
                     return Ok("No stats found for this doctor.");

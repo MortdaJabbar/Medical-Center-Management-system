@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MCMSAPI.dtos.PharmacistDto;
 using MCMSBussinessLogic;
+using MCMSBussinessLogic.Interfaces;
 using MCMSDAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,10 +16,12 @@ namespace MCMSAPI.Controllers
     public class PharmacistController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly IPharmacistService _pharmacistService;
 
-        public PharmacistController(IMapper mapper)
+        public PharmacistController(IMapper mapper, IPharmacistService pharmacistService)
         {
             _mapper = mapper;
+            _pharmacistService = pharmacistService;
         }
         [Authorize(Roles = "Admin")]
         [HttpPost("add")]
@@ -31,9 +34,9 @@ namespace MCMSAPI.Controllers
             }
 
             var pharmacist = _mapper.Map<Pharmacist>(addPharmacistDto);
-            bool isAdded = await pharmacist.AddNewPharmacistAsync();
+            var newId = await _pharmacistService.CreateAsync(pharmacist);
 
-            return isAdded ? Ok(pharmacist.PharmacistId) : BadRequest("Pharmacist already exists or cannot be added.");
+            return newId != null ? Ok(newId.Value) : BadRequest("Pharmacist already exists or cannot be added.");
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("update/{id}")]
@@ -45,11 +48,11 @@ namespace MCMSAPI.Controllers
                 return BadRequest(new { errors });
             }
 
-            Pharmacist? pharmacist = await Pharmacist.FindPharmacistByIdAsync(id);
+            Pharmacist? pharmacist = await _pharmacistService.FindByIdAsync(id);
             if (pharmacist == null) return NotFound("Pharmacist not found.");
 
             _mapper.Map(pharmacistDto, pharmacist);
-            bool updated = await pharmacist.UpdatePharmacistAsync();
+            bool updated = await _pharmacistService.UpdateAsync(pharmacist);
 
             return updated ? Ok("Updated successfully.") : NotFound("Pharmacist could not be updated.");
         }
@@ -57,14 +60,14 @@ namespace MCMSAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPharmacistById(Guid id)
         {
-            var pharmacist = await Pharmacist.FindPharmacistByIdAsync(id);
+            var pharmacist = await _pharmacistService.FindByIdAsync(id);
             return pharmacist != null ? Ok(pharmacist.DTO) : NotFound("Pharmacist not found.");
         }
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllPharmacists( )
         {
-            var pharmacists = await Pharmacist.GetAllPharmacistsAsync( );
+            var pharmacists = await _pharmacistService.GetAllAsync();
             var dtoList = pharmacists.ConvertAll(p => p.DTO);
             return Ok(dtoList);
         }
@@ -72,17 +75,17 @@ namespace MCMSAPI.Controllers
         [HttpDelete("Delete/{pharmacistId}")]
         public async Task<IActionResult> DeletePharmacist(Guid pharmacistId)
         {
-            Pharmacist Pharmist = await Pharmacist.FindPharmacistByIdAsync(pharmacistId);
+            Pharmacist Pharmist = await _pharmacistService.FindByIdAsync(pharmacistId);
             if (Pharmist == null)
                 return NotFound();
-            bool deleted = await Pharmacist.DeletePharmacistByIdAsync(pharmacistId, Pharmist.PersonId);
+            bool deleted = await _pharmacistService.DeleteAsync(pharmacistId, Pharmist.PersonId);
             return deleted ? Ok("Deleted successfully.") : StatusCode(500, "Internal Error in our servers  ");
         }
         [Authorize(Roles = "Pharmacist")]
         [HttpGet("pharmacy-stats")]
         public async Task<ActionResult<PharmacyDashboardStatsDto>> GetPharmacyStats()
         {
-            var stats = await Pharmacist.GetPharmacyDashboardStatsAsync();
+            var stats = await _pharmacistService.GetPharmacyDashboardStatsAsync();
             return Ok(stats);
         }
 

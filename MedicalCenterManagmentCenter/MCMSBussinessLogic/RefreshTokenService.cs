@@ -1,4 +1,5 @@
 ﻿using MCMSDAL;
+using MCMSDAL.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,35 +14,40 @@ namespace MCMSBLL
     }
     public class RefreshTokenService : IRefreshTokenService
     {
-        private static readonly RefreshTokenData _refreshTokenData = new();
+        private readonly IRefreshTokenData _refreshTokenData;
+
+        public RefreshTokenService(IRefreshTokenData refreshTokenData)
+        {
+            _refreshTokenData = refreshTokenData;
+        }
 
         private const int RefreshTokenBytes = 64;
         private const int RefreshTokenDays = 14;
 
         public async Task<string?> CreateTokenAsync(Guid userId, string? ip, string? userAgent)
         {
-            return await CreateAsync(userId, ip, userAgent);
+            return await CreateInternalAsync(userId, ip, userAgent);
         }
 
         public async Task<RefreshTokenResult> RotateTokenAsync(string oldRawToken, string? ip, string? userAgent)
         {
-            return await RotateAsync(oldRawToken, ip, userAgent);
+            return await RotateInternalAsync(oldRawToken, ip, userAgent);
         }
 
         public async Task<bool> RevokeTokenAsync(string rawToken, string? ip)
         {
-            return await RevokeAsync(rawToken, ip);
+            return await RevokeInternalAsync(rawToken, ip);
         }
 
         public async Task RevokeAllTokensAsync(Guid userId, string? ip)
         {
-            await RevokeAllAsync(userId, ip);
+            await RevokeAllInternalAsync(userId, ip);
         }
 
         // =========================================
         // CREATE (called on successful login)
         // =========================================
-        public static async Task<string?> CreateAsync(
+        private async Task<string?> CreateInternalAsync(
             Guid userId,
             string? ip,
             string? userAgent)
@@ -71,7 +77,7 @@ namespace MCMSBLL
         // =========================================
         // ROTATE (called from refresh endpoint)
         // =========================================
-        public static async Task<RefreshTokenResult> RotateAsync(
+        private async Task<RefreshTokenResult> RotateInternalAsync(
             string oldRawToken,
             string? ip,
             string? userAgent)
@@ -118,7 +124,7 @@ namespace MCMSBLL
         // =========================================
         // LOGOUT SINGLE SESSION
         // =========================================
-        public static async Task<bool> RevokeAsync(
+        private async Task<bool> RevokeInternalAsync(
             string rawToken,
             string? ip)
         {
@@ -131,7 +137,7 @@ namespace MCMSBLL
         // =========================================
         // LOGOUT ALL DEVICES
         // =========================================
-        public static async Task RevokeAllAsync(
+        private async Task RevokeAllInternalAsync(
             Guid userId,
             string? ip)
         {

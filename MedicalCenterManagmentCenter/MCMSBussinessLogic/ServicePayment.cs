@@ -1,4 +1,5 @@
 ﻿using MCMSDAL;
+using MCMSDAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,12 @@ namespace MCMSBussinessLogic
 {
     public class ServicePayment : IServicePayment
     {
-        private static readonly ServicePaymentData _servicePaymentData = new();
+        private readonly IServicePaymentData _servicePaymentData;
+
+        public ServicePayment(IServicePaymentData servicePaymentData)
+        {
+            _servicePaymentData = servicePaymentData;
+        }
 
         public async Task<bool> AddPaymentAsync(ServicePaymentDto payment, string? stripeSessionId, string? stripePaymentIntentId)
         {
