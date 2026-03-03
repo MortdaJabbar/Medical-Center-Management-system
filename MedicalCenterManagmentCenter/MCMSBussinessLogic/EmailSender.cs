@@ -26,8 +26,15 @@ namespace MCMSBussinessLogic
 
             string link = $"https://localhost:7119/api/Auth/verify-email?token={token}";
 
-            string app_Password = "wqve lsuq msxr mhwt";
-            string from_email   = "mcms993st@gmail.com";
+            // NOTE: This legacy static email sender is not wired to appsettings.json.
+            // Use EmailSenderService (DI) instead.
+            string from_email = string.Empty;
+            string app_Password = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(from_email) || string.IsNullOrWhiteSpace(app_Password))
+            {
+                throw new InvalidOperationException("EmailSender is not configured. Use EmailSenderService (DI) which reads Email:Smtp from appsettings.json.");
+            }
             string htmlBody = $@"
 <!doctype html>
 <html lang='en' dir='ltr'>
@@ -79,7 +86,7 @@ namespace MCMSBussinessLogic
 </body>
 </html>";
 
-            var message = new MailMessage("mcms993st@gmail.com", toEmail)
+            var message = new MailMessage(from_email, toEmail)
             {
               
        
@@ -102,8 +109,16 @@ namespace MCMSBussinessLogic
         {
             string code = new Random().Next(100000, 999999).ToString(); // 6-digit
             DateTime expiry = DateTime.UtcNow.AddMinutes(5);
-            string from_email   = "mcms993st@gmail.com";
-            string App_Password = "wqve lsuq msxr mhwt";
+
+            // NOTE: This legacy static email sender is not wired to appsettings.json.
+            // Use EmailSenderService (DI) instead.
+            string from_email = string.Empty;
+            string App_Password = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(from_email) || string.IsNullOrWhiteSpace(App_Password))
+            {
+                throw new InvalidOperationException("EmailSender is not configured. Use EmailSenderService (DI) which reads Email:Smtp from appsettings.json.");
+            }
             await _twoFactorCodeData.CreateCodeAsync(userId, code, expiry);
 
             string body = $"Your 2FA code is: <b>{code}</b>. It will expire in 5 minutes.";
@@ -138,8 +153,15 @@ namespace MCMSBussinessLogic
 
             string link = $"https://localhost:7119/pages/ResetPassword.html?token={restpasswordtoken.token}";
 
-            string from_email = "mcms993st@gmail.com";
-            string app_Password = "wqve lsuq msxr mhwt";
+            // NOTE: This legacy static email sender is not wired to appsettings.json.
+            // Use EmailSenderService (DI) instead.
+            string from_email = string.Empty;
+            string app_Password = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(from_email) || string.IsNullOrWhiteSpace(app_Password))
+            {
+                throw new InvalidOperationException("EmailSender is not configured. Use EmailSenderService (DI) which reads Email:Smtp from appsettings.json.");
+            }
 
             string htmlBody = $@"
 <!doctype html>

@@ -1,4 +1,5 @@
 ﻿using MCMSBussinessLogic;
+using MCMSBussinessLogic.Configuration;
 using MCMSBussinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -13,11 +14,12 @@ namespace MCMSAPI.Controllers
 
         private readonly IServicePayment _servicePayment;
 
-        private readonly string _webhookSecret = "whsec_your_webhook_secret"; 
+        private readonly StripeSettings _stripeSettings;
 
-        public WebhookController(IServicePayment servicePayment)
+        public WebhookController(IServicePayment servicePayment, StripeSettings stripeSettings)
         {
             _servicePayment = servicePayment;
+            _stripeSettings = stripeSettings;
         }
 
         [HttpPost]
@@ -25,12 +27,17 @@ namespace MCMSAPI.Controllers
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
+            if (string.IsNullOrWhiteSpace(_stripeSettings.WebhookSecret))
+            {
+                return StatusCode(500, "Stripe webhook secret is not configured. Set Stripe:WebhookSecret in appsettings.json.");
+            }
+
             try
             {
                 var stripeEvent = EventUtility.ConstructEvent(
                     json,
                     Request.Headers["Stripe-Signature"],
-                    _webhookSecret
+                    _stripeSettings.WebhookSecret
                 );
 
                 if (stripeEvent.Type == "checkout.session.completed")

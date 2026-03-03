@@ -1,5 +1,6 @@
 ﻿
 using MCMSAPI.Authorization;
+using MCMSAPI.DependencyInjection;
 using MCMSAPI.dtos.Mapper;
 using MCMSBLL;
 using MCMSBussinessLogic;
@@ -24,7 +25,18 @@ namespace MCMSAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Optional local overrides (keep secrets out of the committed appsettings.json).
+            // Environment variables are added AFTER this so they still win.
+            builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+            builder.Configuration.AddEnvironmentVariables();
+
             var jwtSettings = builder.Configuration.GetSection("Jwt");
+
+            if (string.IsNullOrWhiteSpace(jwtSettings["Key"]))
+            {
+                throw new InvalidOperationException(
+                    "JWT signing key is not configured. Set Jwt:Key in appsettings or via environment variable Jwt__Key.");
+            }
 
             builder.Services.AddCors(options =>
             {
@@ -38,12 +50,7 @@ namespace MCMSAPI
         });
 
             });
-        using MCMSBLL;
-        using MCMSBussinessLogic;
-        using MCMSBussinessLogic.Interfaces;
-        using MCMSBussinessLogic.Services;
-        using MCMSDAL;
-        using MCMSDAL.Interfaces;
+  
 
             builder.Services.AddRateLimiter(options =>
             {
@@ -212,94 +219,7 @@ namespace MCMSAPI
 
             builder.Services.AddSingleton<IAuthorizationHandler, OwnershipHandler>();
             builder.Services.AddAuthorization();
-
-            // ======================================================
-            // DI: DAL (interfaces -> concrete data access)
-            // ======================================================
-            builder.Services.AddScoped<IAppointmentData, AppointmentData>();
-            builder.Services.AddScoped<IDoctorData, DoctorData>();
-            builder.Services.AddScoped<IPersonData, PersonData>();
-            builder.Services.AddScoped<IPatientData, PatientData>();
-            builder.Services.AddScoped<IPharmacistData, PharmacistData>();
-            builder.Services.AddScoped<IStaffData, StaffData>();
-            builder.Services.AddScoped<IInventoryData, InventoryData>();
-            builder.Services.AddScoped<IMedicationData, MedicationData>();
-            builder.Services.AddScoped<IPrescriptionData, PrescriptionData>();
-            builder.Services.AddScoped<ITestData, TestData>();
-            builder.Services.AddScoped<ITestTypeData, TestTypeData>();
-            builder.Services.AddScoped<IInvoiceData, InvoiceData>();
-            builder.Services.AddScoped<IUserAccountData, UserAccountData>();
-            builder.Services.AddScoped<IServicePaymentData, ServicePaymentData>();
-            builder.Services.AddScoped<ITwoFactorCodeData, TwoFactorCodeData>();
-            builder.Services.AddScoped<IRefreshTokenData, RefreshTokenData>();
-
-            // ======================================================
-            // DI: BLL services (interfaces -> concrete services)
-            // ======================================================
-            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
-            builder.Services.AddScoped<IDoctorService, DoctorService>();
-            builder.Services.AddScoped<IPatientService, PatientService>();
-            builder.Services.AddScoped<IPharmacistService, PharmacistService>();
-            builder.Services.AddScoped<IStaffService, StaffService>();
-            builder.Services.AddScoped<IInventoryService, InventoryService>();
-            builder.Services.AddScoped<IMedicationService, MedicationService>();
-            builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
-            builder.Services.AddScoped<ITestService, TestService>();
-            builder.Services.AddScoped<ITestTypeService, TestTypeService>();
-            builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-            builder.Services.AddScoped<IUserAccountService, UserAccountService>();
-
-            // ======================================================
-            // DI: Cross-cutting / utilities
-            // ======================================================
-            builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-            builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
-            builder.Services.AddScoped<IServicePayment, ServicePayment>();
-            builder.Services.AddSingleton<IStripeService, StripeService>();
-
-            // =========================================================
-            // DAL registrations (Data access via interfaces)
-            // =========================================================
-            builder.Services.AddScoped<IAppointmentData, AppointmentData>();
-            builder.Services.AddScoped<IDoctorData, DoctorData>();
-            builder.Services.AddScoped<IEmailVerificationData, EmailVerificationData>();
-            builder.Services.AddScoped<IInventoryData, InventoryData>();
-            builder.Services.AddScoped<IInvoiceData, InvoiceData>();
-            builder.Services.AddScoped<IMedicationData, MedicationData>();
-            builder.Services.AddScoped<IPasswordResetData, PasswordResetData>();
-            builder.Services.AddScoped<IPatientData, PatientData>();
-            builder.Services.AddScoped<IPersonData, PersonData>();
-            builder.Services.AddScoped<IPharmacistData, PharmacistData>();
-            builder.Services.AddScoped<IPrescriptionData, PrescriptionData>();
-            builder.Services.AddScoped<IRefreshTokenData, RefreshTokenData>();
-            builder.Services.AddScoped<IServicePaymentData, ServicePaymentData>();
-            builder.Services.AddScoped<IStaffData, StaffData>();
-            builder.Services.AddScoped<ITestData, TestData>();
-            builder.Services.AddScoped<ITestTypeData, TestTypeData>();
-            builder.Services.AddScoped<ITwoFactorCodeData, TwoFactorCodeData>();
-            builder.Services.AddScoped<IUserAccountData, UserAccountData>();
-
-            // =========================================================
-            // Business registrations (API talks to BLL via interfaces)
-            // =========================================================
-            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
-            builder.Services.AddScoped<IDoctorService, DoctorService>();
-            builder.Services.AddScoped<IPatientService, PatientService>();
-            builder.Services.AddScoped<IPharmacistService, PharmacistService>();
-            builder.Services.AddScoped<IStaffService, StaffService>();
-            builder.Services.AddScoped<IInventoryService, InventoryService>();
-            builder.Services.AddScoped<IMedicationService, MedicationService>();
-            builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
-            builder.Services.AddScoped<ITestService, TestService>();
-            builder.Services.AddScoped<ITestTypeService, TestTypeService>();
-            builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-            builder.Services.AddScoped<IUserAccountService, UserAccountService>();
-            builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
-
-            // Existing BLL interfaces
-            builder.Services.AddScoped<IServicePayment, ServicePayment>();
-            builder.Services.AddScoped<IStripeService, StripeService>();
-            builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            builder.Services.AddDataAccess().AddBusinessServices().AddCrossCuttingServices(builder.Configuration);
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
