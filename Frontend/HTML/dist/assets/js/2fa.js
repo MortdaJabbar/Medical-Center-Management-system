@@ -47,7 +47,7 @@
                     text: 'Verification time has expired. Please login again.',
                     confirmButtonText: 'OK'
                 }).then(() => {
-                    sessionStorage.removeItem('tempUserId');
+                    localStorage.removeItem('tempUserId');
                     window.location.href = "login.html";
                 });
             }
@@ -106,6 +106,7 @@
         .then(data => {
             // Server sets HttpOnly cookies; server also returns user claims in body.
             if (data && data.roleId) {
+                localStorage.removeItem('tempUserId');
                 localStorage.setItem('roleId', data.roleId);
                 localStorage.setItem('userId', data.userId);
                 localStorage.setItem('entityId', data.entityId);

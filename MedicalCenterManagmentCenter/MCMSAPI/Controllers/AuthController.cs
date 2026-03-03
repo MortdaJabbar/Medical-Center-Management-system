@@ -26,7 +26,8 @@ namespace MCMSAPI.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                Path = "/",
                 Expires = DateTime.UtcNow.AddMinutes(expiresMinutes),
                 IsEssential = true
             });
@@ -38,7 +39,8 @@ namespace MCMSAPI.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                Path = "/",
                 Expires = DateTime.UtcNow.AddDays(14),
                 IsEssential = true
             });
@@ -46,13 +48,18 @@ namespace MCMSAPI.Controllers
 
         private void ClearAuthCookies()
         {
-            Response.Cookies.Delete("accessToken");
-            Response.Cookies.Delete("refreshToken");
+            // Delete cookies on common paths to avoid leaving behind older scoped cookies
+            // (e.g., ones created before we set Path = "/" explicitly).
+            Response.Cookies.Delete("accessToken", new CookieOptions { Path = "/" });
+            Response.Cookies.Delete("accessToken", new CookieOptions { Path = "/api/Auth" });
+            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/" });
+            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/api/Auth" });
         }
 
         private void ClearRefreshTokenCookie()
         {
-            Response.Cookies.Delete("refreshToken");
+            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/" });
+            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/api/Auth" });
         }
 
         public AuthController(

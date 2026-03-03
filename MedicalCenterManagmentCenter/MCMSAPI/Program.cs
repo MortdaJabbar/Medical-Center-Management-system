@@ -43,10 +43,15 @@ namespace MCMSAPI
                 options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5500") // exact origin
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials(); // required
+            policy.WithOrigins(
+                    "http://localhost:5500",
+                    "http://localhost:5501",
+                    "https://localhost:5500",
+                    "https://localhost:5501"
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 
             });
@@ -252,8 +257,8 @@ namespace MCMSAPI
             
 
             app.UseRouting();
-            app.UseAuthentication();
             app.UseCors("AllowFrontend");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseRateLimiter();
 

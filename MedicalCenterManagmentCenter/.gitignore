@@ -4,7 +4,7 @@ obj/
 Debug/
 Release/
 .vs/
-
+.vs
 # User-specific files
 *.user
 *.suo

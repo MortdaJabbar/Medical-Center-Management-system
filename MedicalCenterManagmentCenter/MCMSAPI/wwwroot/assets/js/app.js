@@ -7,6 +7,32 @@
    File Description: Main JS file of the template
 */
 
+// Cookie-based auth support:
+// Ensure ALL jQuery AJAX calls send cookies (JWT is stored in HttpOnly cookies by the API).
+(function () {
+    function applyCookieAuthDefaults() {
+        if (!window.jQuery || !window.$ || !$.ajaxSetup) return false;
+
+        $.ajaxSetup({
+            xhrFields: { withCredentials: true },
+            crossDomain: true
+        });
+
+        // Force withCredentials even when individual calls forget it.
+        $.ajaxPrefilter(function (options) {
+            options.xhrFields = options.xhrFields || {};
+            options.xhrFields.withCredentials = true;
+            options.crossDomain = true;
+        });
+
+        return true;
+    }
+
+    if (!applyCookieAuthDefaults()) {
+        document.addEventListener('DOMContentLoaded', applyCookieAuthDefaults);
+    }
+})();
+
 
 /*********************************/
 /*         INDEX                 */

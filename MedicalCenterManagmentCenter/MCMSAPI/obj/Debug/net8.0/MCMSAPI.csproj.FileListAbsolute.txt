@@ -467,3 +467,4 @@ D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\Me
 D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSAPI\obj\Debug\net8.0\MCMSAPI.pdb
 D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSAPI\obj\Debug\net8.0\MCMSAPI.genruntimeconfig.cache
 D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSAPI\obj\Debug\net8.0\ref\MCMSAPI.dll
+D:\Projects\MEDICAL_CENTER_MANAGMENT_SYSTEAM\Medical-Center-Management-system\MedicalCenterManagmentCenter\MCMSAPI\bin\Debug\net8.0\appsettings.Local.json
